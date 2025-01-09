@@ -123,6 +123,7 @@ struct EventInfo: View {
 				}
 		}
 	}
+	
 }
 
 #Preview {
