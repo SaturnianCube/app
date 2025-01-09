@@ -10,14 +10,14 @@ import MapKit
 
 struct ContentView: View {
 	
-	@State var events: [Event]
+	@ObservedObject var dataManager = DataManager.shared
 	
 	@State private var isSheetVisible: Bool = true
 	@State private var viewingEvent: Event? = nil
 	
 	var body: some View {
 		Map {
-			ForEach(events) { event in
+			ForEach(dataManager.events) { event in
 				Marker(event.title, systemImage: event.type.getIcon(), coordinate: event.position)
 			}
 		}.sheet(isPresented: $isSheetVisible) {
@@ -28,7 +28,7 @@ struct ContentView: View {
 					.bold()
 					.frame(maxWidth: .infinity, alignment: .leading)
 				
-				ForEach($events) { $event in
+				ForEach($dataManager.events) { $event in
 					Button {
 						viewingEvent = event
 					} label: {
@@ -68,8 +68,9 @@ struct ContentView: View {
 			}
 		}
 	}
+
 }
 
 #Preview {
-	ContentView(events: Event.generateList())
+	ContentView()
 }

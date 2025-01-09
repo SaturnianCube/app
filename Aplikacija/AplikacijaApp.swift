@@ -11,7 +11,7 @@ import SwiftUI
 struct AplikacijaApp: App {
     var body: some Scene {
         WindowGroup {
-			ContentView(events: Event.generateList())
+			ContentView()
         }
     }
 }
