@@ -8,13 +8,28 @@
 import Foundation
 import MapKit
 
-enum EventType {
+enum EventType: CaseIterable {
 	
 	case food
 	case help
 	case entertainment
 	case shopping
 	case education
+	
+	func getName () -> String {
+		switch self {
+			case .food:
+				return "Hrana"
+			case .help:
+				return "Pomoč"
+			case .entertainment:
+				return "Zabava"
+			case .shopping:
+				return "Nakupovanje"
+			case .education:
+				return "Izobraževanje"
+		}
+	}
 	
 	func getIcon () -> String {
 		switch self {
