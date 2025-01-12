@@ -58,7 +58,7 @@ struct EventInfo: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: 25, height: 25, alignment: .leading)
-					NavigationLink(event.author.name, value: event.author)
+					NavigationLink(event.user.name, value: event.user)
 						.frame(maxWidth: .infinity, alignment: .leading)
 				}
 				
