@@ -15,10 +15,7 @@ struct EventSearchView: View {
 		NavigationView {
 			VStack {
 				
-				HStack {
-					Text("Iskalnik").font(.largeTitle).fontWeight(.bold)
-					Spacer()
-				}
+				Heading(text: "Iskalnik")
 				
 				ScrollView {
 					VStack {
