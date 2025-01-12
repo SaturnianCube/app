@@ -11,12 +11,14 @@ struct EventSearchView: View {
 	
 	@ObservedObject var dataManager = DataManager.shared
 	
+	@State private var navigation: Int? = 0
+	
 	var body: some View {
-		NavigationView {
+		NavigationStack {
 			VStack {
 				
 				Heading(text: "Iskalnik")
-				
+								
 				ScrollView {
 					VStack {
 						ForEach($dataManager.events) { $event in
@@ -27,8 +29,9 @@ struct EventSearchView: View {
 				
 				Spacer()
 				
-				Button("Dodaj", systemImage: "plus") {
-					
+				
+				Button("Dodaj objavo", systemImage: "plus") {
+					navigation = 1
 				}
 					.buttonStyle(.borderedProminent)
 					.font(.system(size: 25))
