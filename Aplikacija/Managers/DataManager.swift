@@ -25,12 +25,14 @@ class DataManager: ObservableObject {
 	static let shared = DataManager()
 	
 	@Published var events: [Event]
+	@Published var currentUser: Optional<User>
 	
 	init () {
+		self.currentUser = nil
 		self.events = [
 			Event(
 				type: .food,
-				author: pickRandomUser(),
+				user: pickRandomUser(),
 				title: "Kosilo",
 				description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
 				payment: MonetaryValue(currency: .eur, value: 10),
@@ -40,7 +42,7 @@ class DataManager: ObservableObject {
 			),
 			Event(
 				type: .help,
-				author: pickRandomUser(),
+				user: pickRandomUser(),
 				title: "Pomoč pri premikanju pohištva",
 				description: "Potrebovala bi kakšnega čvrstega moškega za pomoč pri premikanju novega lesenga pohištva :)",
 				payment: MonetaryValue(currency: .eur, value: 60),
@@ -50,7 +52,7 @@ class DataManager: ObservableObject {
 			),
 			Event(
 				type: .shopping,
-				author: pickRandomUser(),
+				user: pickRandomUser(),
 				title: "Pomoč pri nošenju nakupov",
 				description: "Potreboval bi pomoč pri nošenju nakupljenega blaga, saj sem invalidna oseba.",
 				payment: MonetaryValue(currency: .eur, value: 30),
@@ -60,7 +62,7 @@ class DataManager: ObservableObject {
 			),
 			Event(
 				type: .education,
-				author: pickRandomUser(),
+				user: pickRandomUser(),
 				title: "Izpit iz programiranja",
 				description: "Potreboval bi nekoga, da lahko namesto mene piše izpit iz programiranja, saj nimam pojma kaj delam.",
 				payment: MonetaryValue(currency: .eur, value: 200),
@@ -71,5 +73,35 @@ class DataManager: ObservableObject {
 		]
 	}
 	
+	func addEvent (event: Event) async {
+		self.events.append(event)
+	}
 	
+	func updateEvent (id: UInt16, newEvent: Event) async -> Bool {
+		if let index = self.events.firstIndex(where: {$0.id == id}) {
+			self.events[index] = newEvent
+			return true
+		} else {
+			return false
+		}
+	}
+	
+	func removeEvent (id: UInt) async -> Bool {
+		
+		guard let user = self.currentUser else {
+			return false
+		}
+		
+		guard let event = self.events.first(where: {$0.id == id}) else {
+			return false
+		}
+		
+		if event.user.id == user.id {
+			self.events.removeAll(where: {$0.id == id})
+			return true
+		} else {
+			return false
+		}
+	}
+		
 }
