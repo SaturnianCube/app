@@ -28,8 +28,6 @@ enum EventType {
 				return "bag.fill"
 			case .education:
 				return "graduationcap.fill"
-			default:
-				return "mappinn"
 		}
 	}
 }
@@ -53,15 +51,41 @@ struct MonetaryValue {
 
 struct Event: Identifiable, Equatable {
 	
-	let id = UUID()
+	private static var ID_COUNTER: UInt = 1
+	
+	let id: UInt
 	let type: EventType
-	let author: User
+	let user: User
 	let title: String
 	let description: String
 	let payment: MonetaryValue?
 	let position: CLLocationCoordinate2D
 	let dateInterval: DateInterval
 	let postDate: Date
+	
+	init (
+		type: EventType,
+		user: User,
+		title: String,
+		description: String,
+		payment: MonetaryValue?,
+		position: CLLocationCoordinate2D,
+		dateInterval: DateInterval,
+		postDate: Date
+	) {
+		
+		self.id = Event.ID_COUNTER
+		Event.ID_COUNTER += 1
+		
+		self.type = type
+		self.user = user
+		self.title = title
+		self.description = description
+		self.payment = payment
+		self.position = position
+		self.dateInterval = dateInterval
+		self.postDate = postDate
+	}
 	
 	static func == (lhs: Event, rhs: Event) -> Bool {
 		return lhs.id == rhs.id
@@ -70,13 +94,13 @@ struct Event: Identifiable, Equatable {
 	static func generate () -> Event {
 		return Event(
 			type: .food,
-			   author: pickRandomUser(),
-			   title: "Kosilo",
-			   description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
-			   payment: MonetaryValue(currency: .eur, value: 10),
-			   position: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543),
-			   dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200)),
-			   postDate: Date(timeIntervalSince1970: 1732279985)
-		   )
+			user: pickRandomUser(),
+			title: "Kosilo",
+			description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
+			payment: MonetaryValue(currency: .eur, value: 10),
+			position: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543),
+			dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200)),
+			postDate: Date(timeIntervalSince1970: 1732279985)
+	   )
 	}
 }
