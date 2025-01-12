@@ -74,5 +74,5 @@ struct EventCard: View {
 }
 
 #Preview {
-    EventCard()
+	EventCard(event: Event.generate())
 }
