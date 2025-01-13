@@ -29,6 +29,9 @@ struct EventSearchView: View {
 				
 				Spacer()
 				
+				NavigationLink(destination: EventCreatorView(), tag: 1, selection: $navigation) {
+					EmptyView()
+				}
 				
 				Button("Dodaj objavo", systemImage: "plus") {
 					navigation = 1
