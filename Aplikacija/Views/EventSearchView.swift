@@ -36,10 +36,7 @@ struct EventSearchView: View {
 				Button("Dodaj objavo", systemImage: "plus") {
 					navigation = 1
 				}
-					.buttonStyle(.borderedProminent)
-					.font(.system(size: 25))
-					.fontWeight(.bold)
-					.padding([.top ], 30)
+				.buttonStyle(PrimaryButtonStyle())
 				
 			}
 			.padding([ .leading, .top, .trailing ], 10)

@@ -16,7 +16,7 @@ struct EventCard: View {
 	@State var event: Event
 	
     var body: some View {
-		NavigationLink(destination: EventInfo(event: event)) {
+		NavigationLink(destination: EventInfoView(event: event)) {
 			HStack {
 				Image(systemName: event.type.getIcon())
 					.resizable()

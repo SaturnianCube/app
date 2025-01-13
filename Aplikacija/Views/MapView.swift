@@ -52,19 +52,18 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
 		}
 
 		switch location.authorizationStatus {
-		case .notDetermined:
-			print("Location authorization is not determined.")
-		case .restricted:
-			print("Location is restricted.")
-		case .denied:
-			print("Location permission denied.")
-		case .authorizedAlways, .authorizedWhenInUse:
-			if let location = location.location {
-				mapRegion = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
-			}
-
-		default:
-			break
+			case .notDetermined:
+				print("Location authorization is not determined.")
+			case .restricted:
+				print("Location is restricted.")
+			case .denied:
+				print("Location permission denied.")
+			case .authorizedAlways, .authorizedWhenInUse:
+				if let location = location.location {
+					mapRegion = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
+				}
+			default:
+				break
 		}
 	}
 	
@@ -76,12 +75,38 @@ struct MapView: View {
 	
 	@StateObject var viewModel = ContentViewModel()
 	
+	@State private var selectedEvent: Event?
+	
 	var body: some View {
-		Map {
-			ForEach(dataManager.events) { event in
-				Marker(event.title, systemImage: event.type.getIcon(), coordinate: event.position)
+		NavigationStack {
+			Map(coordinateRegion: viewModel.binding, annotationItems: dataManager.events) { event in
+				MapAnnotation(coordinate: event.position) {
+					Button(action: {
+						selectedEvent = event
+					}) {
+						ZStack {
+							Circle()
+								.fill(event.type.getColor())
+								.frame(width: 40, height: 40)
+							Image(systemName: event.type.getIcon())
+								.resizable()
+								.foregroundColor(.white)
+								.aspectRatio(contentMode: .fit)
+								.frame(width: 25, height: 25)
+						}
+					}
+					.buttonStyle(ScaleEffectButtonStyle())
+				}
 			}
+			.ignoresSafeArea([ .container ], edges: .top)
 		}
+		.sheet(item: $selectedEvent, onDismiss: dismissEventSheet) { event in
+			EventInfoView(event: event)
+		}
+	}
+
+	func dismissEventSheet () {
+		selectedEvent = nil
 	}
 }
 

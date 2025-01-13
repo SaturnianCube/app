@@ -8,8 +8,23 @@
 import SwiftUI
 
 struct ProfileView: View {
-    var body: some View {
-        Text("ProfileView")
+    
+	@ObservedObject var dataManager = DataManager.shared
+	
+	var body: some View {
+		NavigationStack {
+			if let currentUser = dataManager.currentUser {
+				UserInfoView(user: currentUser)
+			} else {
+				VStack {
+					Text("Niste prijavljeni")
+					Button("Prijava") {
+						//
+					}
+					.buttonStyle(PrimaryButtonStyle())
+				}
+			}
+		}
     }
 }
 

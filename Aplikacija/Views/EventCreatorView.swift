@@ -19,7 +19,7 @@ struct EventCreatorView: View {
 	@State var inputType: EventType = .help
 	@State var inputPayment: UInt = 0
 	@State var inputStartDate: Date = Date()
-	@State var inputEndDate: Date = Date()
+	@State var inputEndDate: Date = Date().advanced(by: TimeInterval(10 * 60))
 	
 	@State var errorMessage: String = "" {
 		didSet { shouldShowError = !errorMessage.isEmpty }
@@ -34,32 +34,44 @@ struct EventCreatorView: View {
 				
 				Heading(text: "Dodaj objavo")
 				
-				List {
-					Picker("Tip pomoči", selection: $inputType) {
-						ForEach(EventType.allCases, id: \.self) { eventType in
-							Text(eventType.getName()).tag(eventType)
+				Form {
+					
+					TextField("Naslov objave", text: $inputTitle)
+					
+					TextField("Kratek opis", text: $inputDescription)
+
+					HStack {
+						Picker("Kategorija", selection: $inputType) {
+							ForEach(EventType.allCases, id: \.self) { eventType in
+								Text(eventType.getName()).tag(eventType)
+							}
 						}
 					}
-					TextField("Naslov objave", text: $inputTitle)
-					TextField("Opis", text: $inputDescription)
+					
 					HStack {
-						Text("Cena")
-						TextField("Cena", value: $inputPayment, format: .number)
+						Text("Nagrada")
+						Spacer()
+						TextField("Nagrada", value: $inputPayment, format: .number)
 							.keyboardType(.numberPad)
 							.multilineTextAlignment(.trailing)
 						Text(Currency.eur.getSymbol())
 					}
-					DatePicker(
-						"Začetni datum",
-						selection: $inputStartDate,
-						displayedComponents: [ .date, .hourAndMinute ]
-					)
-					DatePicker(
-						"Končni datum",
-						selection: $inputEndDate,
-						displayedComponents: [ .date, .hourAndMinute ]
-					)
-				}.alert(isPresented: $shouldShowError) {
+					
+					Section(header: Text("Datum in čas")) {
+						DatePicker(
+							"Začetek",
+							selection: $inputStartDate,
+							displayedComponents: [ .date, .hourAndMinute ]
+						)
+						DatePicker(
+							"Konec",
+							selection: $inputEndDate,
+							displayedComponents: [ .date, .hourAndMinute ]
+						)
+					}
+					
+				}
+				.alert(isPresented: $shouldShowError) {
 					Alert(title: Text("Napaka"), message: Text(errorMessage))
 				}
 				
@@ -81,11 +93,11 @@ struct EventCreatorView: View {
 					}
 					
 					if inputStartDate < Date() {
-						errorMessage = "Začetni datum mora biti v prihodnosti"
+						errorMessage = "Datum in čas začetka ne smeta biti v preteklosti"
 						return
 					}
 					
-					if inputEndDate < (inputStartDate.addingTimeInterval(60 * 10)) {
+					if inputEndDate < inputStartDate.addingTimeInterval(10 * 60) {
 						errorMessage = "Interval trajanja mora biti vsaj 10 minut"
 						return
 					}
@@ -100,8 +112,8 @@ struct EventCreatorView: View {
 							title: inputTitle,
 							description: inputDescription,
 							payment: inputPayment > 0
-							? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
-							: nil,
+								? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
+								: nil,
 							position: CLLocationCoordinate2D(),
 							dateInterval: DateInterval(start: inputStartDate, end: inputEndDate),
 							postDate: Date()
@@ -112,10 +124,11 @@ struct EventCreatorView: View {
 						if result {
 							presentationMode.wrappedValue.dismiss()
 						} else {
-							errorMessage = "Objava ni bila uspešno objavljena"
+							errorMessage = "Objava ni bila uspešno ustvarjena"
 						}
 					}
 				}
+				.buttonStyle(PrimaryButtonStyle())
 			}.disabled(isLoading)
 			
 			if isLoading {

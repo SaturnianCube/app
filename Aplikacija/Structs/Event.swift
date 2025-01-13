@@ -7,6 +7,7 @@
 
 import Foundation
 import MapKit
+import SwiftUI
 
 enum EventType: CaseIterable {
 	
@@ -45,6 +46,22 @@ enum EventType: CaseIterable {
 				return "graduationcap.fill"
 		}
 	}
+	
+	func getColor () -> Color {
+		switch self {
+			case .food:
+				return .green
+			case .help:
+				return .blue
+			case .entertainment:
+				return .black
+			case .shopping:
+				return .yellow
+			case .education:
+				return .orange
+		}
+	}
+	
 }
 
 enum Currency {

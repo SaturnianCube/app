@@ -1,5 +1,5 @@
 //
-//  UserInfo.swift
+//  UserInfoView.swift
 //  Aplikacija
 //
 //  Created on 22. 10. 24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserInfo: View {
+struct UserInfoView: View {
 	
 	@State var user: User
 	
@@ -21,10 +21,10 @@ struct UserInfo: View {
 					.frame(width: 100, height: 100, alignment: .leading)
 				VStack {
 					
-					Text(user.name)
-						.frame(maxWidth: .infinity, alignment: .leading)
-						.font(.largeTitle)
-						.bold()
+//					Text(user.name)
+//						.frame(maxWidth: .infinity, alignment: .leading)
+//						.font(.largeTitle)
+//						.bold()
 					
 					HStack {
 						Image(systemName: "star.fill")
@@ -34,6 +34,7 @@ struct UserInfo: View {
 						Text("\(user.rating)")
 							.frame(maxWidth: .infinity, alignment: .leading)
 					}
+					
 				}
 			}
 			.padding([ .leading, .trailing ], 20)
@@ -52,13 +53,13 @@ struct UserInfo: View {
 				.cornerRadius(10)
 				.padding([ .leading, .trailing ], 10)
 							
-			VStack(spacing: 0) {
+			VStack(spacing: 5) {
 				
 				Text("Mnenja drugih")
 					.frame(maxWidth: .infinity, alignment: .leading)
 					.font(.title2)
 					.bold()
-					.padding([ .bottom ], 15)
+					.padding([ .bottom ], 5)
 				
 				ForEach(user.comments) { comment in
 					VStack {
@@ -87,26 +88,23 @@ struct UserInfo: View {
 							.padding([ .leading, .trailing, .bottom ], 10)
 					}
 					.background(Color(UIColor.secondarySystemBackground))
-					.padding([ .bottom ], 5)
 					.cornerRadius(5)
 				}
 				
 				Button("Dodaj mnenje", systemImage: "plus") {
 					
 				}
-					.buttonStyle(.borderedProminent)
-					.font(.system(size: 25))
-					.fontWeight(.bold)
-					.padding([.top ], 30)
+					.buttonStyle(PrimaryButtonStyle())
 			
 			}
 			.padding([ .leading, .trailing], 10)
 			
 			Spacer()
-		}.navigationTitle(user.name)
+		}
+		.navigationTitle(user.name)
 	}
 }
 
 #Preview {
-	UserInfo(user: User.generate())
+	UserInfoView(user: User.generate())
 }

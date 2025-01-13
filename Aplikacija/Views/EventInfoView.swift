@@ -8,7 +8,7 @@
 import SwiftUI
 import MapKit
 
-struct EventInfo: View {
+struct EventInfoView: View {
 	
 	@State var event: Event
 	@State private var position: MapCameraPosition = .camera(MapCamera(centerCoordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0), distance: 1))
@@ -40,6 +40,9 @@ struct EventInfo: View {
 	
 	var body: some View {
 		NavigationStack {
+				
+//			Heading(text: "Objava")
+			
 			VStack {
 				
 				HStack {
@@ -103,9 +106,7 @@ struct EventInfo: View {
 				Button("Sprejmi", systemImage: "checkmark.circle") {
 					
 				}
-					.buttonStyle(.borderedProminent)
-					.font(.system(size: 25))
-					.fontWeight(.bold)
+					.buttonStyle(PrimaryButtonStyle())
 					.padding([.top ], 30)
 				
 				Spacer()
@@ -118,8 +119,7 @@ struct EventInfo: View {
 					updatePosition()
 				}
 				.navigationDestination(for: User.self) { user in
-					UserInfo(user: user)
-//						.navigationTitle(user.name)
+					UserInfoView(user: user)
 				}
 		}
 	}
@@ -127,5 +127,5 @@ struct EventInfo: View {
 }
 
 #Preview {
-	EventInfo(event: Event.generate())
+	EventInfoView(event: Event.generate())
 }
