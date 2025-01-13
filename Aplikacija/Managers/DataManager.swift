@@ -33,7 +33,7 @@ class DataManager: ObservableObject {
 			Event(
 				type: .food,
 				user: pickRandomUser(),
-				title: "Kosilo",
+				title: "Skupno kosilo",
 				description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
 				payment: MonetaryValue(currency: .eur, value: 10),
 				position: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543),
