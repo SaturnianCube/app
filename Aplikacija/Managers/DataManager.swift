@@ -73,8 +73,9 @@ class DataManager: ObservableObject {
 		]
 	}
 	
-	func addEvent (event: Event) async {
+	func addEvent (event: Event) async -> Bool {
 		self.events.append(event)
+		return true
 	}
 	
 	func updateEvent (id: UInt16, newEvent: Event) async -> Bool {
