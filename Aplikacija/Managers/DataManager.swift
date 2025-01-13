@@ -28,7 +28,9 @@ class DataManager: ObservableObject {
 	@Published var currentUser: Optional<User>
 	
 	init () {
-		self.currentUser = nil
+		
+		self.currentUser = User.generate()
+		
 		self.events = [
 			Event(
 				type: .food,
