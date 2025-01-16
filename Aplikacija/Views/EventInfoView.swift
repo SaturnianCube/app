@@ -33,7 +33,7 @@ struct EventInfoView: View {
 
 	func updatePosition () {
 		position = .camera(MapCamera(
-			centerCoordinate: event.position,
+			centerCoordinate: event.position.asCLLocationCoordinate2D,
 			distance: 500
 		))
 	}	
@@ -98,7 +98,7 @@ struct EventInfoView: View {
 					.frame(maxWidth: .infinity, alignment: .leading)
 				
 				Map(position: $position) {
-					Marker(event.title, systemImage: event.type.getIcon(), coordinate: event.position)
+					Marker(event.title, systemImage: event.type.getIcon(), coordinate: event.position.asCLLocationCoordinate2D)
 				}
 				.frame(maxWidth: .infinity, maxHeight: 400)
 				.cornerRadius(5)
@@ -127,5 +127,5 @@ struct EventInfoView: View {
 }
 
 #Preview {
-	EventInfoView(event: Event.generate())
+//	EventInfoView(event: Event.generate())
 }

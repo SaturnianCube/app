@@ -103,30 +103,27 @@ struct EventCreatorView: View {
 					}
 					
 					isLoading = true
-
-					Task {
 						
-						let result = await dataManager.addEvent(event: Event(
-							type: inputType,
-							user: user,
-							title: inputTitle,
-							description: inputDescription,
-							payment: inputPayment > 0
-								? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
-								: nil,
-							position: CLLocationCoordinate2D(),
-							dateInterval: DateInterval(start: inputStartDate, end: inputEndDate),
-							postDate: Date()
-						))
-						
-						isLoading = false
-						
-						if result {
-							presentationMode.wrappedValue.dismiss()
-						} else {
-							errorMessage = "Objava ni bila uspešno ustvarjena"
-						}
-					}
+//					let result = dataManager.addEvent(event: Event(
+//						type: inputType,
+//						user: user,
+//						title: inputTitle,
+//						description: inputDescription,
+//						payment: inputPayment > 0
+//							? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
+//							: nil,
+//						position: Coordinate(coordinate: CLLocationCoordinate2D()),
+//						dateInterval: DateInterval(start: inputStartDate, end: inputEndDate),
+//						postDate: Date()
+//					))
+//					
+//					isLoading = false
+//					
+//					if result {
+//						presentationMode.wrappedValue.dismiss()
+//					} else {
+//						errorMessage = "Objava ni bila uspešno ustvarjena"
+//					}
 				}
 				.buttonStyle(PrimaryButtonStyle())
 			}.disabled(isLoading)

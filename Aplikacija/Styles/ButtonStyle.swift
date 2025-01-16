@@ -13,6 +13,7 @@ struct PrimaryButtonStyle: ButtonStyle {
 		configuration.label
 			.padding()
 			.background(configuration.isPressed ? Color.blue.opacity(0.7) : Color.blue)
+			.foregroundColor(.white)
 			.clipShape(.capsule)
 			.cornerRadius(10)
 			.scaleEffect(configuration.isPressed ? 0.95 : 1)

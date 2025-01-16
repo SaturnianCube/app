@@ -9,7 +9,12 @@ import SwiftUI
 
 struct UserInfoView: View {
 	
-	@State var user: User
+	@ObservedObject private var dataManager = DataManager.shared
+	@StateObject private var viewModel: UserInfoViewModel
+	
+	init (user: User) {
+		_viewModel = .init(wrappedValue: .init(user: user))
+	}
 	
     var body: some View {
 		VStack {
@@ -26,85 +31,83 @@ struct UserInfoView: View {
 //						.font(.largeTitle)
 //						.bold()
 					
-					HStack {
-						Image(systemName: "star.fill")
-							.resizable()
-							.scaledToFit()
-							.frame(width: 25, height: 25, alignment: .leading)
-						Text("\(user.rating)")
-							.frame(maxWidth: .infinity, alignment: .leading)
-					}
+//					Text("Biografija")
+//						.frame(maxWidth: .infinity, alignment: .leading)
+//						.font(.title2)
+//						.bold()
+//						.padding([ .all ], 10)
+					
+					Text(viewModel.user.biography)
+						.padding([ .all ], 10)
+						.frame(maxWidth: .infinity, alignment: .leading)
+						.background(Color(UIColor.secondarySystemBackground))
+						.cornerRadius(10)
+						.padding([ .leading, .trailing ], 10)
 					
 				}
 			}
 			.padding([ .leading, .trailing ], 20)
 			.padding([ .top, .bottom ], 15)
-			
-//			Text("Biografija")
-//				.frame(maxWidth: .infinity, alignment: .leading)
-//				.font(.title2)
-//				.bold()
-//				.padding([ .all ], 10)
-			
-			Text(user.biography)
-				.padding([ .all ], 10)
-				.frame(maxWidth: .infinity, alignment: .leading)
-				.background(Color(UIColor.secondarySystemBackground))
-				.cornerRadius(10)
-				.padding([ .leading, .trailing ], 10)
 							
 			VStack(spacing: 5) {
 				
-				Text("Mnenja drugih")
-					.frame(maxWidth: .infinity, alignment: .leading)
-					.font(.title2)
-					.bold()
-					.padding([ .bottom ], 5)
-				
-				ForEach(user.comments) { comment in
-					VStack {
-						
-						HStack {
-							HStack {
-								Image(systemName: "person.crop.circle")
-									.resizable()
-									.scaledToFit()
-									.frame(width: 20, height: 20, alignment: .leading)
-								NavigationLink(user.name, value: user)
-									.frame(maxWidth: .infinity, alignment: .leading)
-							}
-							HStack {
-								Image(systemName: "star.fill")
-									.resizable()
-									.scaledToFit()
-									.frame(width: 20, height: 20, alignment: .trailing)
-								Text("\(comment.rating)")
-							}
-						}
-							.padding([ .leading, .top, .trailing ], 10)
-						
-						Text(comment.content)
-							.frame(maxWidth: .infinity, alignment: .leading)
-							.padding([ .leading, .trailing, .bottom ], 10)
-					}
-					.background(Color(UIColor.secondarySystemBackground))
-					.cornerRadius(5)
-				}
-				
-				Button("Dodaj mnenje", systemImage: "plus") {
+				HStack {
 					
+					Text("Mnenja drugih")
+						.frame(maxWidth: .infinity, alignment: .leading)
+						.font(.title2)
+						.bold()
+						.padding(.bottom, 5)
+					
+					Spacer()
+					
+					HStack {
+						Text("\(viewModel.averageRating)")
+						Image(systemName: "star.fill")
+							.resizable()
+							.scaledToFit()
+							.frame(width: 20, height: 20, alignment: .trailing)
+					}
 				}
-					.buttonStyle(PrimaryButtonStyle())
+				
+				if viewModel.ratings.count > 0 {
+					ScrollView {
+						ForEach(viewModel.ratings) { rating in
+							RatingView(rating: rating)
+						}
+					}
+				} else {
+					Text("Ni mnenj")
+						.padding([ .top, .bottom ], 60)
+						.italic()
+				}
+				
+				if dataManager.currentUser?.id != viewModel.user.id {
+					Button("Dodaj mnenje", systemImage: "plus") {
+						viewModel.showRatingSheet = true
+					}
+						.buttonStyle(PrimaryButtonStyle())
+				}
 			
 			}
 			.padding([ .leading, .trailing], 10)
 			
 			Spacer()
 		}
-		.navigationTitle(user.name)
+		.sheet(isPresented: $viewModel.showRatingSheet) {
+			RatingCreatorView(user: viewModel.user, onRatingAdded: {
+				viewModel.ratings.append($0)
+			})
+		}
+		.navigationTitle(viewModel.user.name)
+		.onAppear {
+			Task {
+				await viewModel.fetchRatings()
+			}
+		}
 	}
 }
 
 #Preview {
-	UserInfoView(user: User.generate())
+//	UserInfoView(user: User.generate())
 }

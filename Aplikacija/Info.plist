@@ -21,7 +21,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app requires your location to show you nearby events.</string>
+	<string>Aplikacija potrebuje vašo lokacijo za pravilno delovanje.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Aplikacija potrebuje vašo lokacijo za pravilno delovanje.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

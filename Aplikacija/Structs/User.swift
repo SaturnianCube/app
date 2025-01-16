@@ -6,40 +6,32 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-struct User: Identifiable, Hashable {
-	
-	private static var ID_COUNTER: UInt = 1
-	
-	let id: UInt
-	let name: String
-	let rating: Decimal
-	let biography: String
-	let comments: [Comment]
-	
-	init (
-		name: String,
-		rating: Decimal,
-		biography: String,
-		comments: [Comment]
-	) {
+struct User: Identifiable, IdentifiableStruct, Hashable, Codable {
 		
-		self.id = User.ID_COUNTER
-		User.ID_COUNTER += 1
+	@DocumentID var id: String?
+	var name: String
+	var biography: String
+	var ratings: [DocumentReference]
 		
-		self.name = name
-		self.rating = rating
-		self.biography = biography
-		self.comments = comments
-	}
-	
-	static func generate () -> User {
-		return User(
+	static func generate () async -> User {
+		
+		let dataManager = DataManager.shared
+		
+		var user = User(
 			name: "Janezek",
-			rating: 1.0,
 			biography: "Sem Janezek. Živjo!",
-			comments: [ Comment.generate() ]
+			ratings: []
 		)
+		
+		let ref = await dataManager.addUser(user: user)!
+		
+		for _ in 1...Int.random(in: 1...8) {
+			user.ratings.append(await Rating.generate(userRef: ref))
+		}
+		
+		return user
 	}
 	
 }

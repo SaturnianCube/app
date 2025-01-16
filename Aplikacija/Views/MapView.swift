@@ -13,12 +13,15 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
 	var locationManager: CLLocationManager?
 	
 	@Published var mapRegion: MKCoordinateRegion
+	@Published var userLocation: CLLocationCoordinate2D?
 	
 	override init () {
 		self.mapRegion = MKCoordinateRegion(
 			center: CLLocationCoordinate2D(latitude: 46.050152, longitude: 14.468941),
 			span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
 		)
+		super.init()
+		checkLocationEnabled()
 	}
 	
 	var binding: Binding<MKCoordinateRegion> {
@@ -29,43 +32,53 @@ final class ContentViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
 		}
 	}
 	
-	func checkLocationEnabled () {
-		if CLLocationManager.locationServicesEnabled() {
-			locationManager = CLLocationManager()
-			locationManager?.desiredAccuracy = kCLLocationAccuracyBest
-			locationManager!.delegate = self
-		}
-	}
-	
-	func locationManagerDidChangeAuthorization (_ manager: CLLocationManager) {
-		let previousAuthorizationStatus = manager.authorizationStatus
-		manager.requestWhenInUseAuthorization()
-		if manager.authorizationStatus != previousAuthorizationStatus {
-			checkLocationAuthorization()
-		}
+	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+		checkLocationAuthorization()
 	}
 
-	private func checkLocationAuthorization () {
+	private func checkLocationEnabled() {
 		
-		guard let location = locationManager else {
+		guard CLLocationManager.locationServicesEnabled() else {
+			print("Location services are not enabled.")
 			return
 		}
+				locationManager = CLLocationManager()
+		locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+		locationManager?.delegate = self
+		locationManager?.requestWhenInUseAuthorization()
+	}
 
-		switch location.authorizationStatus {
+	private func checkLocationAuthorization() {
+
+		guard let locationManager = locationManager else {
+			return
+		}
+		
+		DispatchQueue.main.async { [weak self] in
+			switch locationManager.authorizationStatus {
 			case .notDetermined:
-				print("Location authorization is not determined.")
+				locationManager.requestWhenInUseAuthorization()
 			case .restricted:
-				print("Location is restricted.")
+				print("Location access is restricted.")
+				
 			case .denied:
-				print("Location permission denied.")
+				print("Location access was denied.")
+				
 			case .authorizedAlways, .authorizedWhenInUse:
-				if let location = location.location {
-					mapRegion = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
+				if let location = locationManager.location {
+					self?.userLocation = location.coordinate
+					self?.mapRegion = MKCoordinateRegion(
+						center: location.coordinate,
+						span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+					)
 				}
-			default:
-				break
+				
+			@unknown default:
+				print("Unknown authorization status.")
+			}
 		}
 	}
+
 	
 }
 
@@ -76,11 +89,15 @@ struct MapView: View {
 	@StateObject var viewModel = ContentViewModel()
 	
 	@State private var selectedEvent: Event?
+	@State var mapRegion = MKCoordinateRegion(
+		center: CLLocationCoordinate2D(latitude: 46.050152, longitude: 14.468941),
+		   span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+	   )
 	
 	var body: some View {
 		NavigationStack {
-			Map(coordinateRegion: viewModel.binding, annotationItems: dataManager.events) { event in
-				MapAnnotation(coordinate: event.position) {
+			Map(coordinateRegion: viewModel.binding, showsUserLocation: true, annotationItems: dataManager.events) { event in
+				MapAnnotation(coordinate: event.position.asCLLocationCoordinate2D) {
 					Button(action: {
 						selectedEvent = event
 					}) {
@@ -99,6 +116,21 @@ struct MapView: View {
 				}
 			}
 			.ignoresSafeArea([ .container ], edges: .top)
+			
+//			if let userLocation = viewModel.userLocation {
+//				MapAnnotation(coordinate: userLocation) {
+//					ZStack {
+//						Circle()
+//							.fill(Color.blue)
+//							.frame(width: 40, height: 40)
+//						Image(systemName: "location.fill")
+//							.resizable()
+//							.foregroundColor(.white)
+//							.aspectRatio(contentMode: .fit)
+//							.frame(width: 25, height: 25)
+//					}
+//				}
+//			}
 		}
 		.sheet(item: $selectedEvent, onDismiss: dismissEventSheet) { event in
 			EventInfoView(event: event)
