@@ -12,8 +12,8 @@ struct RatingCreatorView: View {
 	
 	@StateObject private var viewModel: RatingCreatorViewModel
 	
-	init (user: User, onRatingAdded: @escaping ((Rating) -> Void)) {
-		_viewModel = .init(wrappedValue: .init(user: user, onRatingAdded: onRatingAdded))
+	init (targetUser: User, onRatingAdded: @escaping ((Rating) -> Void)) {
+		_viewModel = .init(wrappedValue: .init(targetUser: targetUser, onRatingAdded: onRatingAdded))
 	}
 	
 	var body: some View {
@@ -60,5 +60,5 @@ struct RatingCreatorView: View {
 }
 
 #Preview {
-	ProfileView()
+	RatingCreatorView(targetUser: User.generateDummy(), onRatingAdded: { _ in })
 }

@@ -9,23 +9,12 @@ import SwiftUI
 import MapKit
 
 struct EventCreatorView: View {
+		
+	@StateObject private var viewModel: EventCreatorViewModel
 	
-	let dataManager = DataManager.shared
-	
-	@Environment(\.presentationMode) var presentationMode
-	
-	@State var inputTitle: String = ""
-	@State var inputDescription: String = ""
-	@State var inputType: EventType = .help
-	@State var inputPayment: UInt = 0
-	@State var inputStartDate: Date = Date()
-	@State var inputEndDate: Date = Date().advanced(by: TimeInterval(10 * 60))
-	
-	@State var errorMessage: String = "" {
-		didSet { shouldShowError = !errorMessage.isEmpty }
+	init () {
+		_viewModel = .init(wrappedValue: .init())
 	}
-	@State var shouldShowError: Bool = false
-	@State var isLoading: Bool = false
 	
     var body: some View {
 		ZStack {
@@ -36,12 +25,12 @@ struct EventCreatorView: View {
 				
 				Form {
 					
-					TextField("Naslov objave", text: $inputTitle)
+					TextField("Naslov objave", text: $viewModel.inputTitle)
 					
-					TextField("Kratek opis", text: $inputDescription)
+					TextField("Kratek opis", text: $viewModel.inputDescription)
 
 					HStack {
-						Picker("Kategorija", selection: $inputType) {
+						Picker("Kategorija", selection: $viewModel.inputType) {
 							ForEach(EventType.allCases, id: \.self) { eventType in
 								Text(eventType.getName()).tag(eventType)
 							}
@@ -51,7 +40,7 @@ struct EventCreatorView: View {
 					HStack {
 						Text("Nagrada")
 						Spacer()
-						TextField("Nagrada", value: $inputPayment, format: .number)
+						TextField("Nagrada", value: $viewModel.inputPayment, format: .number)
 							.keyboardType(.numberPad)
 							.multilineTextAlignment(.trailing)
 						Text(Currency.eur.getSymbol())
@@ -60,75 +49,28 @@ struct EventCreatorView: View {
 					Section(header: Text("Datum in čas")) {
 						DatePicker(
 							"Začetek",
-							selection: $inputStartDate,
+							selection: $viewModel.inputStartDate,
 							displayedComponents: [ .date, .hourAndMinute ]
 						)
 						DatePicker(
 							"Konec",
-							selection: $inputEndDate,
+							selection: $viewModel.inputEndDate,
 							displayedComponents: [ .date, .hourAndMinute ]
 						)
 					}
 					
 				}
-				.alert(isPresented: $shouldShowError) {
-					Alert(title: Text("Napaka"), message: Text(errorMessage))
+				.alert(isPresented: $viewModel.shouldShowError) {
+					Alert(title: Text("Napaka"), message: Text(viewModel.errorMessage))
 				}
 				
 				Button("Objavi", systemImage: "plus") {
 					
-					guard let user = dataManager.currentUser else {
-						errorMessage = "Za ustvarjanje objav morate biti prijavljeni"
-						return
-					}
-					
-					if inputTitle.isEmpty {
-						errorMessage = "Naslov objave ne sme biti prazen"
-						return
-					}
-					
-					if inputDescription.isEmpty {
-						errorMessage = "Opis ne sme biti prazen"
-						return
-					}
-					
-					if inputStartDate < Date() {
-						errorMessage = "Datum in čas začetka ne smeta biti v preteklosti"
-						return
-					}
-					
-					if inputEndDate < inputStartDate.addingTimeInterval(10 * 60) {
-						errorMessage = "Interval trajanja mora biti vsaj 10 minut"
-						return
-					}
-					
-					isLoading = true
-						
-//					let result = dataManager.addEvent(event: Event(
-//						type: inputType,
-//						user: user,
-//						title: inputTitle,
-//						description: inputDescription,
-//						payment: inputPayment > 0
-//							? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
-//							: nil,
-//						position: Coordinate(coordinate: CLLocationCoordinate2D()),
-//						dateInterval: DateInterval(start: inputStartDate, end: inputEndDate),
-//						postDate: Date()
-//					))
-//					
-//					isLoading = false
-//					
-//					if result {
-//						presentationMode.wrappedValue.dismiss()
-//					} else {
-//						errorMessage = "Objava ni bila uspešno ustvarjena"
-//					}
 				}
 				.buttonStyle(PrimaryButtonStyle())
-			}.disabled(isLoading)
+			}.disabled(viewModel.isLoading)
 			
-			if isLoading {
+			if viewModel.isLoading {
 				LoadingBuffer()
 			}
 		}

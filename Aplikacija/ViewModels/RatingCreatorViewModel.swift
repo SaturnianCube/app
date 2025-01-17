@@ -6,26 +6,20 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
 
 @MainActor
-class RatingCreatorViewModel: ObservableObject {
+class RatingCreatorViewModel: CreatorViewModel {
 
 	@Environment(\.presentationMode) private var presentationMode
 	@ObservedObject private var dataManager: DataManager = DataManager.shared
-	
+		
 	// Inputs
 	@Published var targetUser: User
 	var onRatingAdded: ((Rating) -> Void)
 		
-	// Inputs
+	// UI Inputs
 	@Published var inputComment: String = ""
 	@Published var inputRating: Decimal = 0.0
-	
-	// UI State
-	@Published var shouldShowError: Bool = false
-	@Published var errorMessage: String = "" { didSet { shouldShowError = !errorMessage.isEmpty } }
-	@Published var isLoading: Bool = false
 	
 	init (targetUser: User, onRatingAdded: @escaping ((Rating) -> Void)) {
 		self.targetUser = targetUser
@@ -71,7 +65,7 @@ class RatingCreatorViewModel: ObservableObject {
 		
 		isLoading = false
 
-		if res != nil {
+		if let res = res {
 			onRatingAdded(rating)
 			presentationMode.wrappedValue.dismiss()
 		} else {
