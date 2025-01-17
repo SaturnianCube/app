@@ -105,7 +105,7 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 	
 	@DocumentID var id: String?
 	var type: EventType
-	var user: User
+	var user: DocumentReference
 	var title: String
 	var description: String
 	var payment: MonetaryValue?
@@ -115,22 +115,38 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 	
 	// Methods
 	
-	mutating public func create () async {
-		let updatedUser = await Event.dataManager.addDocument(collection: Event.collectionName, data: self)
-		self.id = updatedUser?.documentID
+	mutating public func create () async -> Event? {
+		
+		let updated = await Event.dataManager.addDocument(collection: Event.collectionName, data: self)
+		
+		if let updated = updated {
+			self.id = updated.documentID
+			return self
+		}
+		
+		return nil
 	}
 	
-	public func update () async {
-		let _ = await Event.dataManager.updateDocument(collection: Event.collectionName, data: self)
+	public func update () async -> Event? {
+		
+		let updated = await Event.dataManager.updateDocument(collection: Event.collectionName, data: self)
+		
+		if let updated = updated {
+			return updated
+		}
+		
+		return nil
 	}
 	
-	mutating public func delete () async {
+	mutating public func delete () async -> Bool {
 		
 		let res = await Event.dataManager.deleteDocument(collection: Event.collectionName, data: self)
 		
 		if res {
 			self.id = nil
 		}
+		
+		return res
 	}
 	
 //	func addEvent (event: Event) async -> Bool {
@@ -185,16 +201,17 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 	
 	// Generation
 	
-//	static func generate () -> Event {
-//		return Event(
-//			type: .food,
-//			user: User.generate(),
-//			title: "Kosilo",
-//			description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
-//			payment: MonetaryValue(currency: .eur, value: 10),
-//			position: Coordinate(coordinate: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543)),
-//			dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200)),
-//			postDate: Date(timeIntervalSince1970: 1732279985)
-//	   )
-//	}
+	static func generateDummy () -> Event {
+		return Event(
+			id: RandomFactory.randomId(),
+			type: .food,
+			user: User.getRefById(id: RandomFactory.randomId()),
+			title: "Kosilo",
+			description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
+			payment: MonetaryValue(currency: .eur, value: 10),
+			position: Coordinate(coordinate: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543)),
+			dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200)),
+			postDate: Date(timeIntervalSince1970: 1732279985)
+	   )
+	}
 }

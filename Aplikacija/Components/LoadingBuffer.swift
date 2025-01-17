@@ -10,7 +10,6 @@ import SwiftUI
 struct LoadingBuffer: View {
     var body: some View {
 		ZStack {
-//					Color.black.opacity(0.5).ignoresSafeArea()
 			VStack(spacing: 16) {
 				ProgressView()
 					.progressViewStyle(CircularProgressViewStyle(tint: .white))

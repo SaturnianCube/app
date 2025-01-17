@@ -20,22 +20,38 @@ struct Rating: Identifiable, Hashable, Codable, IdentifiableStruct {
 	
 	// Methods
 	
-	mutating public func create () async {
-		let updatedRating = await Rating.dataManager.addDocument(collection: Rating.collectionName, data: self)
-		self.id = updatedRating?.documentID
+	mutating public func create () async -> Rating? {
+		
+		let updated = await Rating.dataManager.addDocument(collection: Rating.collectionName, data: self)
+		
+		if let updated = updated {
+			self.id = updated.documentID
+			return self
+		}
+		
+		return nil
 	}
 	
-	public func update () async {
-		let _ = await Rating.dataManager.updateDocument(collection: Rating.collectionName, data: self)
+	public func update () async -> Rating? {
+		
+		let updated = await Rating.dataManager.updateDocument(collection: Rating.collectionName, data: self)
+		
+		if let updated = updated {
+			return updated
+		}
+		
+		return nil
 	}
 	
-	mutating public func delete () async {
+	mutating public func delete () async -> Bool {
 		
 		let res = await Rating.dataManager.deleteDocument(collection: Rating.collectionName, data: self)
 		
 		if res {
 			self.id = nil
 		}
+		
+		return res
 	}
 	
 	// Static
@@ -52,8 +68,8 @@ struct Rating: Identifiable, Hashable, Codable, IdentifiableStruct {
 		return await dataManager.fetchDocument(collection: collectionName, id: id)
 	}
 	
-	static func fetchRatingsByRef (docRefs: [DocumentReference]) async -> [Rating] {
-		return await dataManager.fetchDocumentsByRefs(docRefs: docRefs)
+	static func fetchByRefs (refs: [DocumentReference]) async -> [Rating] {
+		return await dataManager.fetchDocumentsByRefs(refs: refs)
 	}
 	
 	// Generation

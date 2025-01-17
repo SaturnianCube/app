@@ -20,22 +20,38 @@ struct User: Identifiable, Hashable, Codable, IdentifiableStruct {
 	
 	// Methods
 	
-	mutating public func create () async {
-		let updatedUser = await User.dataManager.addDocument(collection: User.collectionName, data: self)
-		self.id = updatedUser?.documentID
+	mutating public func create () async -> User? {
+		
+		let updated = await User.dataManager.addDocument(collection: User.collectionName, data: self)
+		
+		if let updated = updated {
+			self.id = updated.documentID
+			return self
+		}
+		
+		return nil
 	}
 	
-	public func update () async {
-		let _ = await User.dataManager.updateDocument(collection: User.collectionName, data: self)
+	public func update () async -> User? {
+		
+		let updated = await User.dataManager.updateDocument(collection: User.collectionName, data: self)
+		
+		if let updated = updated {
+			return updated
+		}
+		
+		return nil
 	}
 	
-	mutating public func delete () async {
+	mutating public func delete () async -> Bool {
 		
 		let res = await User.dataManager.deleteDocument(collection: User.collectionName, data: self)
 		
 		if res {
 			self.id = nil
 		}
+		
+		return res
 	}
 	
 	// Static
@@ -52,19 +68,20 @@ struct User: Identifiable, Hashable, Codable, IdentifiableStruct {
 		return await dataManager.fetchDocument(collection: collectionName, id: id)
 	}
 	
+	static func fetchByRef (ref: DocumentReference) async -> User? {
+		return await dataManager.fetchDocumentByRef(collection: collectionName, ref: ref)
+	}
+	
 	// Generation
 	
 	static func generateDummy () -> User {
-		
-		var dataManager = DataManager.shared
-		
 		return User(
 			id: "EVUYpzqMpbzMjCBwA6Fd",
 			name: "Jure",
 			biography: "Nimam pojma kaj delam, ampak bom naredil faks.",
 			ratings: [
-				dataManager.getRatingRefById(id: "0RyE5FDGWWxjyFMg1Pav"),
-				dataManager.getRatingRefById(id: "0uOOeFWdyZ7Z6Gfwekuv")
+				Rating.getRefById(id: "0RyE5FDGWWxjyFMg1Pav"),
+				Rating.getRefById(id: "0uOOeFWdyZ7Z6Gfwekuv")
 			]
 		)
 	}

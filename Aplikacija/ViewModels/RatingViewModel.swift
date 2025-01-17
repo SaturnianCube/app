@@ -11,6 +11,7 @@ import FirebaseFirestore
 @MainActor
 class RatingViewModel: ObservableObject {
 
+	// Inputs
 	@Published var rating: Rating
 	@Published var user: User?
 	
@@ -20,7 +21,7 @@ class RatingViewModel: ObservableObject {
 	}
 	
 	func fetchRatingUser () async {
-		self.user = await DataManager.shared.fetchUser(id: rating.user.documentID)
+		self.user = await User.fetchById(id: rating.user.documentID)
 	}
 
 }

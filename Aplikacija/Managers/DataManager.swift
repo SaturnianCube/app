@@ -11,79 +11,15 @@ import SwiftUI
 import FirebaseCore
 import FirebaseFirestore
 
-//func pickRandomUser () -> User {
-//	
-//	let users = [
-//		User(name: "Janezek", rating: 1.0, biography: "Sem Janezek. Živjo!", comments: [ Comment.generate() ]),
-//		User(name: "Eva", rating: 3.6, biography: "Sem prvič na tej aplikaciji. Ž20", comments: [ Comment.generate(), Comment.generate() ]),
-//		User(name: "Bojan", rating: 5.0, biography: "Sem invalidna oseba. Rad nakupujem.", comments: [ Comment.generate(), Comment.generate(), Comment.generate() ]),
-//		User(name: "Jure", rating: 2.5, biography: "Nimam pojma kaj delam, ampak bom naredil faks.", comments: [ Comment.generate(), Comment.generate(), Comment.generate(), Comment.generate() ])
-//	]
-//	
-//	return users[Int.random(in: 0..<users.count)]
-//}
-
 class DataManager: ObservableObject {
 	
-	static let shared = DataManager()
-	
-	private let db = Firestore.firestore()
-	
-	@Published var events: [Event]
-	@Published var currentUser: Optional<User>
-	
-	init () {
+	static let shared: DataManager = DataManager()
 		
-		self.events = []
-		self.currentUser = nil
-		
-//		self.currentUser = User.generate()
-//		
-//		self.events = [
-//			Event(
-//				type: .food,
-//				user: pickRandomUser(),
-//				title: "Skupno kosilo",
-//				description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
-//				payment: MonetaryValue(currency: .eur, value: 10),
-//				position: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543),
-//				dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200)),
-//				postDate: Date(timeIntervalSince1970: 1732279985)
-//			),
-//			Event(
-//				type: .help,
-//				user: pickRandomUser(),
-//				title: "Pomoč pri premikanju pohištva",
-//				description: "Potrebovala bi kakšnega čvrstega moškega za pomoč pri premikanju novega lesenga pohištva :)",
-//				payment: MonetaryValue(currency: .eur, value: 60),
-//				position: CLLocationCoordinate2D(latitude: 46.039161, longitude: 14.490042),
-//				dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1729004400), end: Date(timeIntervalSince1970: 1729011600)),
-//				postDate: Date(timeIntervalSince1970: 1729005068)
-//			),
-//			Event(
-//				type: .shopping,
-//				user: pickRandomUser(),
-//				title: "Pomoč pri nošenju nakupov",
-//				description: "Potreboval bi pomoč pri nošenju nakupljenega blaga, saj sem invalidna oseba.",
-//				payment: MonetaryValue(currency: .eur, value: 30),
-//				position: CLLocationCoordinate2D(latitude: 46.06793, longitude: 14.54191),
-//				dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1731514500), end: Date(timeIntervalSince1970: 1731519000)),
-//				postDate: Date(timeIntervalSince1970: 1731481697)
-//			),
-//			Event(
-//				type: .education,
-//				user: pickRandomUser(),
-//				title: "Lov na Sašo",
-//				description: "Potreboval bi nekoga, da mi pomaga najdet Sašo na faksu. Imam resen za opravit zelo resen pogovor z njim.",
-//				payment: MonetaryValue(currency: .eur, value: 200),
-//				position: CLLocationCoordinate2D(latitude: 46.050152, longitude: 14.468941),
-//				dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1733985000), end: Date(timeIntervalSince1970: 1733988600)),
-//				postDate: Date(timeIntervalSince1970: 1733949762)
-//			)
-//		]
+	@Published var events: [Event] = []
+	@Published var currentUser: User? = nil
 
-	}
-	
+	private let db: Firestore = Firestore.firestore()
+		
 	func getDocumentRefById (collection: String, id: String) -> DocumentReference {
 		return db.collection(collection).document(id)
 	}
@@ -92,9 +28,9 @@ class DataManager: ObservableObject {
 		
 		if let id = data.id {
 			
-			let docRef = db.collection(collection).document(id)
+			let ref = db.collection(collection).document(id)
 			
-			return docRef
+			return ref
 		}
 		
 		return nil
@@ -102,11 +38,11 @@ class DataManager: ObservableObject {
 	
 	func addDocument<T: Codable> (collection: String, data: T) async -> DocumentReference? {
 		
-		let collRef = db.collection(collection)
+		let coll = db.collection(collection)
 		
 		do {
-			let newDocRef = try collRef.addDocument(from: data)
-			return newDocRef
+			let newRef = try coll.addDocument(from: data)
+			return newRef
 		} catch {
 			print("Error while adding to /\(collection): \(error.localizedDescription)")
 			return nil
@@ -115,10 +51,10 @@ class DataManager: ObservableObject {
 	
 	func fetchDocument<T: Codable> (collection: String, id: String) async -> T? {
 		
-		let docRef = db.collection(collection).document(id)
+		let ref = db.collection(collection).document(id)
 		
 		return await withCheckedContinuation { continuation in
-			docRef.getDocument(as: T.self) { result in
+			ref.getDocument(as: T.self) { result in
 				switch result {
 					case .success(let data):
 						continuation.resume(returning: data)
@@ -130,17 +66,19 @@ class DataManager: ObservableObject {
 		}
 	}
 	
-	func fetchDocumentsByRefs<T> (docRefs: [DocumentReference]) async -> [T] where T: Codable {
-		
-		var data: [T] = []
-		
+	func fetchDocumentByRef<T: Codable> (collection: String, ref: DocumentReference) async -> T? {
+		return await fetchDocument(collection: collection, id: ref.documentID)
+	}
+	
+	func fetchDocumentsByRefs<T> (refs: [DocumentReference]) async -> [T] where T: Codable {
 		return await withCheckedContinuation { continuation in
 			
+			var data: [T] = []
 			let dispatchGroup = DispatchGroup()
 					
-			for docRef in docRefs {
+			for ref in refs {
 				dispatchGroup.enter()
-				docRef.getDocument(as: T.self) { result in
+				ref.getDocument(as: T.self) { result in
 					switch result {
 						case .success(let _data):
 							data.append(_data)
@@ -162,10 +100,10 @@ class DataManager: ObservableObject {
 			
 			if let id = data.id {
 				
-				let docRef = db.collection(collection).document(id)
+				let ref = db.collection(collection).document(id)
 				
 				do {
-					try docRef.setData(from: data)
+					try ref.setData(from: data)
 					continuation.resume(returning: data)
 				} catch {
 					print("Error while updating /\(collection): \(error.localizedDescription)")
@@ -181,9 +119,9 @@ class DataManager: ObservableObject {
 		return await withCheckedContinuation { continuation in
 			if let id = data.id {
 				
-				let docRef = db.collection(collection).document(id)
+				let ref = db.collection(collection).document(id)
 				
-				docRef.delete() { error in
+				ref.delete() { error in
 					if let error = error {
 						print("Error while deleting /\(collection): \(error.localizedDescription)")
 					} else {

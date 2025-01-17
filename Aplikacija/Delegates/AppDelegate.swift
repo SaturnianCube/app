@@ -7,7 +7,6 @@
 
 import Foundation
 import Firebase
-//import FirebaseAppCheck
 
 class AppDelegate: NSObject, UIApplicationDelegate {
 	func application(

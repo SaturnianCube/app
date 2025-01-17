@@ -10,19 +10,20 @@ import FirebaseFirestore
 
 @MainActor
 class UserInfoViewModel: ObservableObject {
-
-	@Published var user: User
-	@Published var ratings: [Rating]
 	
+	// Inputs
+	@Published var user: User
+	
+	// UI State
+	@Published var ratings: [Rating] = []
 	@Published var showRatingSheet: Bool = false
 	
 	init (user: User) {
 		self.user = user
-		self.ratings = []
 	}
 	
 	func fetchRatings () async {
-		self.ratings = await DataManager.shared.fetchRatingsByRef(ratingRefs: user.ratings)
+		self.ratings = await Rating.fetchByRefs(refs: user.ratings)
 	}
 	
 	var averageRating: Decimal {
