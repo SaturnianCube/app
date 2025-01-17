@@ -31,7 +31,7 @@ class DataManager: ObservableObject {
 	
 	@Published var events: [Event]
 	@Published var currentUser: Optional<User>
-//	
+	
 	init () {
 		
 		self.events = []
@@ -84,7 +84,11 @@ class DataManager: ObservableObject {
 
 	}
 	
-	private func getDocumentRef<T> (collection: String, data: T) -> DocumentReference? where T: Codable, T: IdentifiableStruct {
+	func getDocumentRefById (collection: String, id: String) -> DocumentReference {
+		return db.collection(collection).document(id)
+	}
+	
+	func getDocumentRef<T> (collection: String, data: T) -> DocumentReference? where T: Codable, T: IdentifiableStruct {
 		
 		if let id = data.id {
 			
@@ -96,7 +100,7 @@ class DataManager: ObservableObject {
 		return nil
 	}
 	
-	private func addDocument<T: Codable> (collection: String, data: T) async -> DocumentReference? {
+	func addDocument<T: Codable> (collection: String, data: T) async -> DocumentReference? {
 		
 		let collRef = db.collection(collection)
 		
@@ -109,12 +113,12 @@ class DataManager: ObservableObject {
 		}
 	}
 	
-	private func fetchDocument<T: Codable> (collection: String, id: String) async -> T? {
+	func fetchDocument<T: Codable> (collection: String, id: String) async -> T? {
 		
-		let doc = db.collection(collection).document(id)
+		let docRef = db.collection(collection).document(id)
 		
 		return await withCheckedContinuation { continuation in
-			doc.getDocument(as: T.self) { result in
+			docRef.getDocument(as: T.self) { result in
 				switch result {
 					case .success(let data):
 						continuation.resume(returning: data)
@@ -126,7 +130,7 @@ class DataManager: ObservableObject {
 		}
 	}
 	
-	private func fetchDocumentsByRefs<T> (refs: [DocumentReference]) async -> [T] where T: Codable {
+	func fetchDocumentsByRefs<T> (docRefs: [DocumentReference]) async -> [T] where T: Codable {
 		
 		var data: [T] = []
 		
@@ -134,9 +138,9 @@ class DataManager: ObservableObject {
 			
 			let dispatchGroup = DispatchGroup()
 					
-			for ref in refs {
+			for docRef in docRefs {
 				dispatchGroup.enter()
-				ref.getDocument(as: T.self) { result in
+				docRef.getDocument(as: T.self) { result in
 					switch result {
 						case .success(let _data):
 							data.append(_data)
@@ -153,8 +157,7 @@ class DataManager: ObservableObject {
 		}
 	 }
 	
-	private func updateDocument<T> (collection: String, data: T) async -> T? where T: Codable, T: IdentifiableStruct {
-		
+	func updateDocument<T> (collection: String, data: T) async -> T? where T: Codable, T: IdentifiableStruct {
 		return await withCheckedContinuation { continuation in
 			
 			if let id = data.id {
@@ -172,80 +175,25 @@ class DataManager: ObservableObject {
 			
 			continuation.resume(returning: nil)
 		}
-		
 	}
 	
-	// User
-	
-	func getUserRef (user: User) -> DocumentReference? {
-		return getDocumentRef(collection: "users", data: user)
-	}
-	
-	func addUser (user: User) async -> DocumentReference? {
-		return await addDocument(collection: "users", data: user)
-	}
-	
-	func fetchUser (id: String) async -> User? {
-		return await fetchDocument(collection: "users", id: id)
-	}
-	
-	func updateUser (user: User) async -> User? {
-		return await updateDocument(collection: "users", data: user)
-	}
-	
-	// Rating
-	
-	func getRatingRef (rating: Rating) -> DocumentReference? {
-		return getDocumentRef(collection: "ratings", data: rating)
-	}
-	
-	func addRating (rating: Rating) async -> DocumentReference? {
-		return await addDocument(collection: "ratings", data: rating)
-	}
-	
-	func fetchRating (id: String) async -> Rating? {
-		return await fetchDocument(collection: "ratings", id: id)
-	}
-	
-	func fetchRatingsByRef (ratingRefs: [DocumentReference]) async -> [Rating] {
-		return await fetchDocumentsByRefs(refs: ratingRefs)
-	}
-	
-	func updateRating (rating: Rating) async -> Rating? {
-		return await updateDocument(collection: "ratings", data: rating)
-	}
-	
-	// Event
-	
-	func addEvent (event: Event) async -> Bool {
-		self.events.append(event)
-		return true
-	}
-	
-	func updateEvent (id: String, newEvent: Event) async -> Bool {
-		if let index = self.events.firstIndex(where: {$0.id == id}) {
-			self.events[index] = newEvent
-			return true
-		} else {
-			return false
-		}
-	}
-	
-	func removeEvent (id: String) async -> Bool {
-		
-		guard let user = self.currentUser else {
-			return false
-		}
-		
-		guard let event = self.events.first(where: {$0.id == id}) else {
-			return false
-		}
-		
-		if event.user.id == user.id {
-			self.events.removeAll(where: {$0.id == id})
-			return true
-		} else {
-			return false
+	func deleteDocument<T> (collection: String, data: T) async -> Bool where T: Codable, T: IdentifiableStruct {
+		return await withCheckedContinuation { continuation in
+			if let id = data.id {
+				
+				let docRef = db.collection(collection).document(id)
+				
+				docRef.delete() { error in
+					if let error = error {
+						print("Error while deleting /\(collection): \(error.localizedDescription)")
+					} else {
+						continuation.resume(returning: true)
+					}
+				}
+				
+			}
+			
+			continuation.resume(returning: false)
 		}
 	}
 		

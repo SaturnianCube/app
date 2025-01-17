@@ -98,8 +98,11 @@ struct Coordinate: Codable {
 	
 }
 
-struct Event: Identifiable, IdentifiableStruct, Equatable, Codable {
-		
+struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
+	
+	private static let dataManager: DataManager = DataManager.shared
+	private static let collectionName: String = "events"
+	
 	@DocumentID var id: String?
 	var type: EventType
 	var user: User
@@ -110,9 +113,77 @@ struct Event: Identifiable, IdentifiableStruct, Equatable, Codable {
 	var dateInterval: DateInterval
 	var postDate: Date
 	
+	// Methods
+	
+	mutating public func create () async {
+		let updatedUser = await Event.dataManager.addDocument(collection: Event.collectionName, data: self)
+		self.id = updatedUser?.documentID
+	}
+	
+	public func update () async {
+		let _ = await Event.dataManager.updateDocument(collection: Event.collectionName, data: self)
+	}
+	
+	mutating public func delete () async {
+		
+		let res = await Event.dataManager.deleteDocument(collection: Event.collectionName, data: self)
+		
+		if res {
+			self.id = nil
+		}
+	}
+	
+//	func addEvent (event: Event) async -> Bool {
+//		self.events.append(event)
+//		return true
+//	}
+//	
+//	func updateEvent (id: String, newEvent: Event) async -> Bool {
+//		if let index = self.events.firstIndex(where: {$0.id == id}) {
+//			self.events[index] = newEvent
+//			return true
+//		} else {
+//			return false
+//		}
+//	}
+//	
+//	func removeEvent (id: String) async -> Bool {
+//		
+//		guard let user = self.currentUser else {
+//			return false
+//		}
+//		
+//		guard let event = self.events.first(where: {$0.id == id}) else {
+//			return false
+//		}
+//		
+//		if event.user.id == user.id {
+//			self.events.removeAll(where: {$0.id == id})
+//			return true
+//		} else {
+//			return false
+//		}
+//	}
+	
+	// Static
+	
 	static func == (lhs: Event, rhs: Event) -> Bool {
 		return lhs.id == rhs.id
 	}
+	
+	static func getRefById (id: String) -> DocumentReference {
+		return dataManager.getDocumentRefById(collection: collectionName, id: id)
+	}
+	
+	static func getRef (event: Event) -> DocumentReference? {
+		return dataManager.getDocumentRef(collection: collectionName, data: event)
+	}
+	
+	static func fetchById (id: String) async -> Event? {
+		return await dataManager.fetchDocument(collection: collectionName, id: id)
+	}
+	
+	// Generation
 	
 //	static func generate () -> Event {
 //		return Event(
