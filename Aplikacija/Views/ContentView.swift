@@ -10,7 +10,7 @@ import MapKit
 
 struct ContentView: View {
 	
-	@ObservedObject var dataManager = DataManager.shared
+	@ObservedObject private var dataManager = DataManager.shared
 	
 	var body: some View {
 		TabView {

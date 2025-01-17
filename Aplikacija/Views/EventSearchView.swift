@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EventSearchView: View {
 	
-	@ObservedObject var dataManager = DataManager.shared
+	@ObservedObject private var dataManager = DataManager.shared
 	
 	@State private var navigation: Int? = 0
 	

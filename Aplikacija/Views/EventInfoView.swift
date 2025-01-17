@@ -10,33 +10,19 @@ import MapKit
 
 struct EventInfoView: View {
 	
-	@State var event: Event
-	@State private var position: MapCameraPosition = .camera(MapCamera(centerCoordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0), distance: 1))
-	
-	private let dateFormatter = DateFormatter()
-	private let timeFormatter = DateComponentsFormatter()
-	private let timeIntervalFormatter = DateIntervalFormatter()
+	@ObservedObject private var viewModel: EventInfoViewModel
 	
 	init (event: Event) {
-		
-		self.event = event
-		
-		dateFormatter.dateStyle = .medium
-		dateFormatter.timeStyle = .none
-		
-		timeFormatter.unitsStyle = .abbreviated
-		timeFormatter.allowedUnits = [ .hour, .minute ]
-		
-		timeIntervalFormatter.dateStyle = .none
-		timeIntervalFormatter.timeStyle = .short
+		_viewModel = .init(wrappedValue: .init(event: event))
 	}
-
-	func updatePosition () {
-		position = .camera(MapCamera(
-			centerCoordinate: event.position.asCLLocationCoordinate2D,
-			distance: 500
-		))
-	}	
+	
+	var event: Event {
+		return viewModel.event
+	}
+	
+	var user: User {
+		return viewModel.user
+	}
 	
 	var body: some View {
 		NavigationStack {
@@ -61,7 +47,7 @@ struct EventInfoView: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: 25, height: 25, alignment: .leading)
-					NavigationLink(event.user.name, value: event.user)
+					NavigationLink(user.name, value: user)
 						.frame(maxWidth: .infinity, alignment: .leading)
 				}
 				
@@ -70,7 +56,7 @@ struct EventInfoView: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: 25, height: 25, alignment: .leading)
-					Text(dateFormatter.string(from: event.dateInterval.start))
+					Text(FormatterFactory.dateFormatter.string(from: event.dateInterval.start))
 						.frame(maxWidth: .infinity, alignment: .leading)
 				}
 				
@@ -79,7 +65,7 @@ struct EventInfoView: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: 25, height: 25, alignment: .leading)
-					Text("\(timeIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end)) (\(timeFormatter.string(from: event.dateInterval.duration) ?? "?"))")
+					Text("\(FormatterFactory.timeFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end)) (\(FormatterFactory.timeFormatter.string(from: event.dateInterval.duration) ?? "?"))")
 						.frame(maxWidth: .infinity, alignment: .leading)
 				}
 				
@@ -97,7 +83,7 @@ struct EventInfoView: View {
 				Text(event.description)
 					.frame(maxWidth: .infinity, alignment: .leading)
 				
-				Map(position: $position) {
+				Map(position: $viewModel.mapCameraPosition) {
 					Marker(event.title, systemImage: event.type.getIcon(), coordinate: event.position.asCLLocationCoordinate2D)
 				}
 				.frame(maxWidth: .infinity, maxHeight: 400)
@@ -116,7 +102,7 @@ struct EventInfoView: View {
 				.padding([ .leading, .trailing ], 15)
 				.presentationDragIndicator(.visible)
 				.onChange(of: event, initial: true) {
-					updatePosition()
+					viewModel.updatePosition()
 				}
 				.navigationDestination(for: User.self) { user in
 					UserInfoView(user: user)

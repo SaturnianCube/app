@@ -11,6 +11,8 @@ import FirebaseFirestore
 @MainActor
 class UserInfoViewModel: ObservableObject {
 	
+	@ObservedObject private var dataManager = DataManager.shared
+	
 	// Inputs
 	@Published var user: User
 	
@@ -20,6 +22,10 @@ class UserInfoViewModel: ObservableObject {
 	
 	init (user: User) {
 		self.user = user
+	}
+	
+	var currentUser: User? {
+		return dataManager.currentUser
 	}
 	
 	func fetchRatings () async {

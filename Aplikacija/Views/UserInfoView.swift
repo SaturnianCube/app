@@ -9,7 +9,6 @@ import SwiftUI
 
 struct UserInfoView: View {
 	
-	@ObservedObject private var dataManager = DataManager.shared
 	@StateObject private var viewModel: UserInfoViewModel
 	
 	init (user: User) {
@@ -82,7 +81,7 @@ struct UserInfoView: View {
 						.italic()
 				}
 				
-				if dataManager.currentUser?.id != viewModel.user.id {
+				if viewModel.currentUser?.id != viewModel.user.id {
 					Button("Dodaj mnenje", systemImage: "plus") {
 						viewModel.showRatingSheet = true
 					}
@@ -95,7 +94,7 @@ struct UserInfoView: View {
 			Spacer()
 		}
 		.sheet(isPresented: $viewModel.showRatingSheet) {
-			RatingCreatorView(user: viewModel.user, onRatingAdded: {
+			RatingCreatorView(targetUser: viewModel.user, onRatingAdded: {
 				viewModel.ratings.append($0)
 			})
 		}
@@ -109,5 +108,5 @@ struct UserInfoView: View {
 }
 
 #Preview {
-//	UserInfoView(user: User.generate())
+	UserInfoView(user: User.generateDummy())
 }

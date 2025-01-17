@@ -18,8 +18,16 @@ class DataManager: ObservableObject {
 	@Published var events: [Event] = []
 	@Published var currentUser: User? = nil
 
+	// State
+	
+	func addEvent (event: Event) {
+		events.append(event)
+	}
+	
+	// DB
+	
 	private let db: Firestore = Firestore.firestore()
-		
+	
 	func getDocumentRefById (collection: String, id: String) -> DocumentReference {
 		return db.collection(collection).document(id)
 	}
