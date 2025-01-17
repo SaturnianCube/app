@@ -72,7 +72,7 @@ struct UserInfoView: View {
 				if viewModel.ratings.count > 0 {
 					ScrollView {
 						ForEach(viewModel.ratings) { rating in
-							RatingView(rating: rating)
+							RatingCard(rating: rating)
 						}
 					}
 				} else {

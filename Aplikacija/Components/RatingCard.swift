@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RatingView: View {
+struct RatingCard: View {
 	
 	@StateObject private var viewModel: RatingViewModel
 	
@@ -52,5 +52,5 @@ struct RatingView: View {
 }
 
 #Preview {
-//    RatingView()
+	RatingCard(rating: Rating.generateDummy(forUser: User.generateDummy()))
 }

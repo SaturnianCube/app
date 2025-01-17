@@ -65,7 +65,7 @@ struct EventInfoView: View {
 						.resizable()
 						.scaledToFit()
 						.frame(width: 25, height: 25, alignment: .leading)
-					Text("\(FormatterFactory.timeFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end)) (\(FormatterFactory.timeFormatter.string(from: event.dateInterval.duration) ?? "?"))")
+					Text("\(FormatterFactory.timeIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))")
 						.frame(maxWidth: .infinity, alignment: .leading)
 				}
 				
@@ -107,11 +107,15 @@ struct EventInfoView: View {
 				.navigationDestination(for: User.self) { user in
 					UserInfoView(user: user)
 				}
+		}.onAppear {
+			Task {
+				await viewModel.fetchUser()
+			}
 		}
 	}
 	
 }
 
 #Preview {
-//	EventInfoView(event: Event.generate())
+	EventInfoView(event: Event.generateDummy())
 }
