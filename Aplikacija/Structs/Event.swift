@@ -199,6 +199,10 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 		return await dataManager.fetchDocument(collection: collectionName, id: id)
 	}
 	
+	static func fetchAll () async -> [Event] {
+		return await dataManager.fetchAllDocuments(collection: collectionName)
+	}
+	
 	// Generation
 	
 	static func generateDummy () -> Event {

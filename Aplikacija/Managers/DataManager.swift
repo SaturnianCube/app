@@ -95,6 +95,22 @@ class DataManager: ObservableObject {
 		}
 	 }
 	
+	func fetchAllDocuments<T> (collection: String) async -> [T] where T: Codable {
+		do {
+			
+			let snapshot = try await db.collection(collection).getDocuments()
+			
+			return snapshot.documents.compactMap { document -> T? in
+				return try? document.data(as: T.self)
+			}
+			
+		} catch {
+			print("Error while fetching all \(collection): \(error.localizedDescription)")
+		}
+
+		return []
+	}
+	
 	func updateDocument<T> (collection: String, data: T) async -> T? where T: Codable, T: IdentifiableStruct {
 		return await withCheckedContinuation { continuation in
 			

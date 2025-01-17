@@ -33,7 +33,8 @@ struct ContentView: View {
 			
 		}.onAppear {			
 			Task {
-				dataManager.currentUser = await dataManager.fetchUser(id: "EVUYpzqMpbzMjCBwA6Fd")
+				dataManager.currentUser = await User.fetchById(id: "EVUYpzqMpbzMjCBwA6Fd")
+				dataManager.events = await Event.fetchAll()
 			}
 		}
 	}
