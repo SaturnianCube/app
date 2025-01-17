@@ -76,8 +76,8 @@ struct User: Identifiable, Hashable, Codable, IdentifiableStruct {
 	
 	static func generateDummy () -> User {
 		return User(
-			id: "EVUYpzqMpbzMjCBwA6Fd",
-			name: "Jure",
+			id: RandomFactory.randomId(),
+			name: "N/A",
 			biography: "Nimam pojma kaj delam, ampak bom naredil faks.",
 			ratings: [
 				Rating.getRefById(id: "0RyE5FDGWWxjyFMg1Pav"),
