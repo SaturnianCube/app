@@ -17,6 +17,7 @@ struct Rating: Identifiable, Hashable, Codable, IdentifiableStruct {
 	var user: DocumentReference
 	var rating: Decimal
 	var comment: String
+	var postDate: Date = Date()
 	
 	// Methods
 	

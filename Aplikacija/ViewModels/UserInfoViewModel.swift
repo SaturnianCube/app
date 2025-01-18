@@ -39,5 +39,9 @@ class UserInfoViewModel: ObservableObject {
 			 }) / Decimal(ratings.count)
 			: 0.0
 	}
+	
+	var sortedRatings: [Rating] {
+		return ratings.sorted { $0.postDate > $1.postDate }
+	}
 
 }
