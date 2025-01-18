@@ -134,7 +134,6 @@ class DataManager: ObservableObject {
 	
 	func updateDocument<T> (collection: String, data: T) async -> T? where T: Codable, T: IdentifiableStruct {
 		return await withCheckedContinuation { continuation in
-			
 			if let id = data.id {
 				
 				let ref = db.collection(collection).document(id)
@@ -147,9 +146,13 @@ class DataManager: ObservableObject {
 					print("Error while updating /\(collection): \(error.localizedDescription)")
 				}
 				
+				continuation.resume(returning: nil)
+				return
+				
+			} else {
+				continuation.resume(returning: nil)
+				return
 			}
-			
-			continuation.resume(returning: nil)
 		}
 	}
 	
@@ -160,17 +163,22 @@ class DataManager: ObservableObject {
 				let ref = db.collection(collection).document(id)
 				
 				ref.delete() { error in
+					
 					if let error = error {
 						print("Error while deleting /\(collection): \(error.localizedDescription)")
 					} else {
 						continuation.resume(returning: true)
 						return
 					}
+					
+					continuation.resume(returning: false)
+					return
 				}
 				
+			} else {
+				continuation.resume(returning: false)
+				return
 			}
-			
-			continuation.resume(returning: false)
 		}
 	}
 		
