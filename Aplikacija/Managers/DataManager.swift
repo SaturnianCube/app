@@ -164,6 +164,7 @@ class DataManager: ObservableObject {
 						print("Error while deleting /\(collection): \(error.localizedDescription)")
 					} else {
 						continuation.resume(returning: true)
+						return
 					}
 				}
 				
