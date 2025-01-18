@@ -17,25 +17,30 @@ struct EventSearchView: View {
 			Heading(text: "Iskalnik")
 			
 			TextField("Išči...", text: $viewModel.searchQuery)
-				.padding()
+				.padding([ .top, .bottom ], 8)
+				.padding([ .leading, .trailing ], 8)
 				.background(Color.gray.opacity(0.1))
 				.cornerRadius(10)
 				.padding([ .leading, .bottom, .trailing ], 10)
 
 			HStack {
 				
+//				Text("Sortiraj po")
+				
 				Spacer()
 				
 				Button(action: {
 					viewModel.toggleSortOrder()
 				}) {
-					
-					Text(viewModel.sortOrder.getLabel())
-					
-					Image(systemName: viewModel.sortOrder.getIcon())
-						.resizable()
-						.scaledToFit()
-						.frame(width: 25, height: 25)
+					HStack {
+
+						Text(viewModel.sortOrder.getLabel())
+						
+						Image(systemName: viewModel.sortOrder.getIcon())
+							.resizable()
+							.scaledToFit()
+							.frame(width: 25, height: 25)
+					}
 				}
 				
 			}
@@ -71,7 +76,8 @@ struct EventSearchView: View {
 					EmptyView()
 				}
 			}
-			.padding([ .leading, .top, .trailing ], 10)
+			.padding([ .leading, .trailing ], 10)
+			.padding(.top, 5)
 		}
 		.refreshable {
 			await viewModel.dataManager.fetchEvents()

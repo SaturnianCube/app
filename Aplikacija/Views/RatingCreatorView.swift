@@ -18,7 +18,7 @@ struct RatingCreatorView: View {
 	
 	var body: some View {
 		ZStack {
-			
+						
 			Color(.systemGroupedBackground)
 				.edgesIgnoringSafeArea(.all)
 			
