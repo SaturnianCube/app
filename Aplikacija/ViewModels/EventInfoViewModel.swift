@@ -43,8 +43,12 @@ class EventInfoViewModel: ObservableObject {
 	
 	func accept () async -> Bool {
 		
-		if await self.event.delete() {
-			dataManager.removeEvent(event: self.event)
+		let event = self.event
+				
+		if await event.delete() {
+			await MainActor.run {
+				dataManager.removeEvent(event: event)
+			}
 			return true
 		}
 		
