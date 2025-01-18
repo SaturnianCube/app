@@ -15,9 +15,12 @@ struct EventCreatorView: View {
     var body: some View {
 		ZStack {
 			
+			Color(.systemGroupedBackground)
+				.edgesIgnoringSafeArea(.all)
+			
+			Heading(text: "Dodaj objavo")
+			
 			VStack {
-				
-				Heading(text: "Dodaj objavo")
 				
 				Form {
 					
@@ -64,7 +67,9 @@ struct EventCreatorView: View {
 					
 				}
 				.buttonStyle(PrimaryButtonStyle())
-			}.disabled(viewModel.isLoading)
+				
+			}
+			.disabled(viewModel.isLoading)
 			
 			if viewModel.isLoading {
 				LoadingBuffer()
