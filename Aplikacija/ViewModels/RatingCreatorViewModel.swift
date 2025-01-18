@@ -60,7 +60,7 @@ class RatingCreatorViewModel: CreatorViewModel {
 			comment: inputComment
 		)
 		
-		let res = await rating.create()
+		let res = await rating.create(forUser: targetUser)
 		
 		isLoading = false
 

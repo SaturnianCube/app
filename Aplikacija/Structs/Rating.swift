@@ -20,12 +20,20 @@ struct Rating: Identifiable, Hashable, Codable, IdentifiableStruct {
 	
 	// Methods
 	
-	mutating public func create () async -> Rating? {
+	mutating public func create (forUser: User) async -> Rating? {
 		
 		let updated = await Rating.dataManager.addDocument(collection: Rating.collectionName, data: self)
 		
 		if let updated = updated {
+			
 			self.id = updated.documentID
+			
+			if let ref = Rating.getRef(rating: self) {
+				var _forUser = forUser
+				_forUser.ratings.append(ref)
+				let _ = await _forUser.update()
+			}
+			
 			return self
 		}
 		

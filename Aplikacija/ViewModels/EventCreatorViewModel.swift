@@ -64,7 +64,7 @@ class EventCreatorViewModel: CreatorViewModel {
 			postDate: Date()
 		)
 		
-		let res = await event.create()
+		let res = await event.create()		
 
 		isLoading = false
 
