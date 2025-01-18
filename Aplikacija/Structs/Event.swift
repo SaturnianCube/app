@@ -138,13 +138,13 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 		return nil
 	}
 	
-	mutating public func delete () async -> Bool {
+	public func delete () async -> Bool {
 		
 		let res = await Event.dataManager.deleteDocument(collection: Event.collectionName, data: self)
 		
-		if res {
-			self.id = nil
-		}
+//		if res {
+//			self.id = nil
+//		}
 		
 		return res
 	}

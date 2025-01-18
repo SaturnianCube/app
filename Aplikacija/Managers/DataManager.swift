@@ -25,7 +25,11 @@ class DataManager: ObservableObject {
 	}
 	
 	func addEvent (event: Event) {
-		events.append(event)
+		self.events.append(event)
+	}
+	
+	func removeEvent (event: Event) {
+		self.events = self.events.filter { $0.id != event.id }
 	}
 	
 	// DB

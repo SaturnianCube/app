@@ -10,6 +10,8 @@ import MapKit
 
 struct EventInfoView: View {
 	
+	@Environment(\.presentationMode) private var presentationMode
+	
 	@ObservedObject private var viewModel: EventInfoViewModel
 	
 	init (event: Event) {
@@ -92,7 +94,11 @@ struct EventInfoView: View {
 				.cornerRadius(5)
 				
 				Button("Sprejmi", systemImage: "checkmark.circle") {
-					
+					Task {
+						if await viewModel.accept() {
+							presentationMode.wrappedValue.dismiss()
+						}
+					}
 				}
 					.buttonStyle(PrimaryButtonStyle())
 					.padding([.top ], 30)

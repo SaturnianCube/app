@@ -9,7 +9,10 @@ import Foundation
 import SwiftUI
 import MapKit
 
+@MainActor
 class EventInfoViewModel: ObservableObject {
+	
+	@ObservedObject private var dataManager: DataManager = .shared
 	
 	// Inputs
 	@Published var event: Event
@@ -36,6 +39,16 @@ class EventInfoViewModel: ObservableObject {
 			centerCoordinate: event.position.asCLLocationCoordinate2D,
 			distance: 500
 		))
+	}
+	
+	func accept () async -> Bool {
+		
+		if await self.event.delete() {
+			dataManager.removeEvent(event: self.event)
+			return true
+		}
+		
+		return false
 	}
 	
 }
