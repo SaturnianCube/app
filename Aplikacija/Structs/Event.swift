@@ -111,7 +111,7 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 	var payment: MonetaryValue?
 	var position: Coordinate
 	var dateInterval: DateInterval
-	var postDate: Date
+	var postDate: Date = Date()
 	
 	// Methods
 	
@@ -214,8 +214,7 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 			description: "Želim si družbe pri kosilu. Če te več zanima o meni, si poglej moj profil.",
 			payment: MonetaryValue(currency: .eur, value: 10),
 			position: Coordinate(coordinate: CLLocationCoordinate2D(latitude: 46.054072, longitude: 14.512543)),
-			dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200)),
-			postDate: Date(timeIntervalSince1970: 1732279985)
+			dateInterval: DateInterval(start: Date(timeIntervalSince1970: 1732280400), end: Date(timeIntervalSince1970: 1732282200))
 	   )
 	}
 }

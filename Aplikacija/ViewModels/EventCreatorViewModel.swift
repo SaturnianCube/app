@@ -60,8 +60,7 @@ class EventCreatorViewModel: CreatorViewModel {
 				? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
 				: nil,
 			position: Coordinate(coordinate: CLLocationCoordinate2D()),
-			dateInterval: DateInterval(start: inputStartDate, end: inputEndDate),
-			postDate: Date()
+			dateInterval: DateInterval(start: inputStartDate, end: inputEndDate)
 		)
 		
 		let res = await event.create()		
