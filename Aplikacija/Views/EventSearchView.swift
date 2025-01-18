@@ -16,12 +16,12 @@ struct EventSearchView: View {
 
 			Heading(text: "Iskalnik")
 			
-			TextField("Išči...", text: $viewModel.searchQuery)
-				.padding([ .top, .bottom ], 8)
-				.padding([ .leading, .trailing ], 8)
-				.background(Color.gray.opacity(0.1))
-				.cornerRadius(10)
-				.padding([ .leading, .bottom, .trailing ], 10)
+//			TextField("Išči...", text: $viewModel.searchQuery)
+//				.padding([ .top, .bottom ], 8)
+//				.padding([ .leading, .trailing ], 8)
+//				.background(Color.gray.opacity(0.1))
+//				.cornerRadius(10)
+//				.padding([ .leading, .bottom, .trailing ], 10)
 
 			HStack {
 				
@@ -77,10 +77,7 @@ struct EventSearchView: View {
 			}
 			.padding([ .leading, .trailing ], 10)
 			.padding(.top, 5)
-		}
-		.refreshable {
-			await viewModel.fetchEvents()
-		}
+		.searchable(text: $viewModel.searchQuery, prompt: "Išči")
 	}
 }
 
