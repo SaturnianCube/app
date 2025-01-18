@@ -129,6 +129,7 @@ class DataManager: ObservableObject {
 				do {
 					try ref.setData(from: data)
 					continuation.resume(returning: data)
+					return
 				} catch {
 					print("Error while updating /\(collection): \(error.localizedDescription)")
 				}
