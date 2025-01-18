@@ -80,6 +80,15 @@ struct EventSearchView: View {
 			}
 		}
 		.searchable(text: $viewModel.searchQuery, prompt: "Išči")
+		.onChange(of: viewModel.sortedEvents) { newSortedEvents in
+			print("Posodobil se je seznam: \(newSortedEvents.map { $0.title })")
+		}
+		.onDisappear {
+			print("Nisem več aktiven")
+		}
+		.onAppear {
+			print("Aktiven sem")
+		}
 	}
 }
 
