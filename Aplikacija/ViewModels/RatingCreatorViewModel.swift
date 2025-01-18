@@ -13,7 +13,7 @@ class RatingCreatorViewModel: CreatorViewModel {
 		
 	// Inputs
 	@Published var targetUser: User
-	var onRatingAdded: ((Rating) -> Void)
+	private var onRatingAdded: ((Rating) -> Void)
 		
 	// UI Inputs
 	@Published var inputComment: String = ""
