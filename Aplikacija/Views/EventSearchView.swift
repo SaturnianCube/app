@@ -37,9 +37,7 @@ struct EventSearchView: View {
 						Text(viewModel.sortOrder.getLabel())
 						
 						Image(systemName: viewModel.sortOrder.getIcon())
-							.resizable()
-							.scaledToFit()
-							.frame(width: 25, height: 25)
+							.font(.system(size: 20))
 					}
 				}
 				

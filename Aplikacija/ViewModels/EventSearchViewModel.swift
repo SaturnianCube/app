@@ -22,16 +22,16 @@ enum EventSortOrder: CaseIterable {
 			case .endDate:
 				return "Konec naprej"
 			case .price:
-				return "Cena naprej"
+				return "Nagrada naprej"
 		}
 	}
 	
 	func getIcon () -> String {
 		switch (self) {
 			case .startDate:
-				return "calendar"
+				return "clock"
 			case .endDate:
-				return "calendar.badge.clock"
+				return "clock.badge.exclamationmark"
 			case .price:
 				return "eurosign"
 		}
