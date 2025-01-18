@@ -39,7 +39,8 @@ struct RatingCreatorView: View {
 					HStack {
 						Text("Komentar")
 						Spacer()
-						TextField("Komentar", text: $viewModel.inputComment)
+						TextField("Komentar", text: $viewModel.inputComment, axis:. vertical)
+							.lineLimit(1...5)
 					}
 					
 				}

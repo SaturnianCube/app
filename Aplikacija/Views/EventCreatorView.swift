@@ -31,7 +31,8 @@ struct EventCreatorView: View {
 					
 					TextField("Naslov objave", text: $viewModel.inputTitle)
 					
-					TextField("Kratek opis", text: $viewModel.inputDescription)
+					TextField("Kratek opis", text: $viewModel.inputDescription, axis: .vertical)
+						.lineLimit(1...5)
 
 					HStack {
 						Picker("Kategorija", selection: $viewModel.inputType) {
