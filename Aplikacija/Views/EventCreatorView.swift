@@ -62,12 +62,13 @@ struct EventCreatorView: View {
 							displayedComponents: [ .date, .hourAndMinute ]
 						)
 					}
+					
 				}
 				.padding(.bottom, 5)
 				.alert(isPresented: $viewModel.shouldShowError) {
 					Alert(title: Text("Napaka"), message: Text(viewModel.errorMessage))
 				}
-
+				
 				Map(coordinateRegion: $mapModel.mapRegion, interactionModes: .all, showsUserLocation: true, userTrackingMode: .none)
 					.padding([ .leading, .trailing], 20)
 					.frame(maxWidth: .infinity, maxHeight: 180)
@@ -82,6 +83,7 @@ struct EventCreatorView: View {
 				
 			}
 			.disabled(viewModel.isLoading)
+			.ignoresSafeArea(.keyboard)
 			
 			if viewModel.isLoading {
 				LoadingBuffer()
