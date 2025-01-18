@@ -21,6 +21,19 @@ struct PrimaryButtonStyle: ButtonStyle {
 	}
 }
 
+struct PrimaryIconButtonStyle: ButtonStyle {
+	func makeBody (configuration: Configuration) -> some View {
+		configuration.label
+			.padding(5)
+			.background(configuration.isPressed ? Color.blue.opacity(0.7) : Color.blue)
+			.foregroundColor(.white)
+			.clipShape(.capsule)
+			.cornerRadius(10)
+			.scaleEffect(configuration.isPressed ? 0.95 : 1)
+			.animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
+	}
+}
+
 struct ScaleEffectButtonStyle: ButtonStyle {
 	func makeBody (configuration: Configuration) -> some View {
 		configuration.label

@@ -53,10 +53,21 @@ struct UserInfoView: View {
 				HStack {
 					
 					Text("Mnenja drugih")
-						.frame(maxWidth: .infinity, alignment: .leading)
 						.font(.title2)
 						.bold()
 						.padding(.bottom, 5)
+					
+					if viewModel.currentUser?.id != viewModel.user.id {
+						Button(action: {
+							viewModel.showRatingSheet = true
+						}) {
+							Image(systemName: "plus")
+								.resizable()
+								.scaledToFit()
+								.frame(width: 15, height: 15)
+						}
+						.buttonStyle(PrimaryIconButtonStyle())
+					}
 					
 					Spacer()
 					
@@ -81,17 +92,11 @@ struct UserInfoView: View {
 						.italic()
 				}
 				
-				if viewModel.currentUser?.id != viewModel.user.id {
-					Button("Dodaj mnenje", systemImage: "plus") {
-						viewModel.showRatingSheet = true
-					}
-						.buttonStyle(PrimaryButtonStyle())
-				}
+				Spacer()
 			
 			}
 			.padding([ .leading, .trailing], 10)
-			
-			Spacer()
+
 		}
 		.sheet(isPresented: $viewModel.showRatingSheet) {
 			RatingCreatorView(targetUser: viewModel.user, onRatingAdded: {
