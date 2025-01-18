@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 class RatingCreatorViewModel: CreatorViewModel {
 
-	@ObservedObject private var dataManager: DataManager = DataManager.shared
+	@ObservedObject private var dataManager: DataManager = .shared
 		
 	// Inputs
 	@Published var targetUser: User

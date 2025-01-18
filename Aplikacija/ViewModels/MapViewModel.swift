@@ -11,7 +11,7 @@ import MapKit
 
 class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 	
-	@ObservedObject private var dataManager = DataManager.shared
+	@ObservedObject private var dataManager: DataManager = .shared
 	
 	// Map Manager
 	private var locationManager: CLLocationManager?

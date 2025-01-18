@@ -10,7 +10,7 @@ import MapKit
 
 struct ContentView: View {
 	
-	@ObservedObject private var dataManager = DataManager.shared
+	@ObservedObject private var dataManager: DataManager = .shared
 	
 	var body: some View {
 		TabView {
@@ -31,7 +31,7 @@ struct ContentView: View {
 					Label("Profil", systemImage: "person")
 				}
 			
-		}.onAppear {			
+		}.onAppear {
 			Task {
 				dataManager.currentUser = await User.fetchById(id: "EVUYpzqMpbzMjCBwA6Fd")
 				dataManager.events = await Event.fetchAll()

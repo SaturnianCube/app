@@ -12,7 +12,7 @@ import MapKit
 class EventCreatorViewModel: CreatorViewModel {
 
 	@Environment(\.presentationMode) private var presentationMode
-	@ObservedObject private var dataManager: DataManager = DataManager.shared
+	@ObservedObject private var dataManager: DataManager = .shared
 		
 	// UI Inputs
 	@State var inputTitle: String = ""

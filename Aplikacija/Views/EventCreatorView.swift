@@ -10,7 +10,7 @@ import MapKit
 
 struct EventCreatorView: View {
 		
-	@StateObject private var viewModel: EventCreatorViewModel = EventCreatorViewModel()
+	@StateObject private var viewModel: EventCreatorViewModel = .init()
 		
     var body: some View {
 		ZStack {

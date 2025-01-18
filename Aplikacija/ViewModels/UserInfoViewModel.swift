@@ -11,7 +11,7 @@ import FirebaseFirestore
 @MainActor
 class UserInfoViewModel: ObservableObject {
 	
-	@ObservedObject private var dataManager = DataManager.shared
+	@ObservedObject private var dataManager: DataManager = .shared
 	
 	// Inputs
 	@Published var user: User

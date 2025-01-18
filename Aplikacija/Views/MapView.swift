@@ -10,7 +10,7 @@ import MapKit
 
 struct MapView: View {
 	
-	@StateObject var viewModel = MapViewModel()
+	@StateObject var viewModel: MapViewModel = .init()
 	
 	var body: some View {
 		NavigationStack {

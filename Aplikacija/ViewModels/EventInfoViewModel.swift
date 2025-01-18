@@ -23,7 +23,7 @@ class EventInfoViewModel: ObservableObject {
 	init (event: Event) {
 		self.event = event
 	}
-	
+		
 	func fetchUser () async {
 		let user = await User.fetchByRef(ref: event.user)
 		if let user = user {

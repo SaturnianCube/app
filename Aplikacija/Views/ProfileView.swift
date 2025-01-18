@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     
-	@ObservedObject private var dataManager = DataManager.shared
+	@ObservedObject private var dataManager: DataManager = .shared
 	
 	var body: some View {
 		NavigationStack {
