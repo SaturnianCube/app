@@ -20,6 +20,10 @@ class DataManager: ObservableObject {
 
 	// State
 	
+	func fetchEvents () async {
+		self.events = await Event.fetchAll()
+	}
+	
 	func addEvent (event: Event) {
 		events.append(event)
 	}

@@ -34,7 +34,7 @@ struct ContentView: View {
 		}
 		.task {
 			dataManager.currentUser = await User.fetchById(id: "EVUYpzqMpbzMjCBwA6Fd")
-			dataManager.events = await Event.fetchAll()
+			await dataManager.fetchEvents()
 		}
 	}
 
