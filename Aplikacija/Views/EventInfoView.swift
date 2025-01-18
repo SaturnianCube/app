@@ -45,47 +45,58 @@ struct EventInfoView: View {
 				}
 				
 				HStack {
-					Image(systemName: "person.crop.circle")
-						.resizable()
-						.scaledToFit()
-						.frame(width: 25, height: 25, alignment: .leading)
-					NavigationLink(user.name) {
-						UserInfoView(user: user)
+					
+					VStack(spacing: 5) {
+						
+						HStack {
+							Image(systemName: "person.crop.circle")
+								.font(.system(size: 25))
+							NavigationLink(user.name) {
+								UserInfoView(user: user)
+							}
+								.frame(maxWidth: .infinity, alignment: .leading)
+						}
+						
+						if let payment = event.payment {
+							HStack {
+								Image(systemName: "banknote")
+									.font(.system(size: 25))
+								Text(payment.value, format: .currency(code: "EUR"))
+									.frame(maxWidth: .infinity, alignment: .leading)
+							}
+						} else {
+							Spacer()
+						}
+						
 					}
-						.frame(maxWidth: .infinity, alignment: .leading)
-				}
-				
-				HStack {
-					Image(systemName: "calendar")
-						.resizable()
-						.scaledToFit()
-						.frame(width: 25, height: 25, alignment: .leading)
-					Text(FormatterFactory.dateFormatter.string(from: event.dateInterval.start))
-						.frame(maxWidth: .infinity, alignment: .leading)
-				}
-				
-				HStack {
-					Image(systemName: "clock")
-						.resizable()
-						.scaledToFit()
-						.frame(width: 25, height: 25, alignment: .leading)
-					Text("\(FormatterFactory.timeIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))")
-						.frame(maxWidth: .infinity, alignment: .leading)
-				}
-				
-				if let payment = event.payment {
-					HStack {
-						Image(systemName: "banknote")
-							.resizable()
-							.scaledToFit()
-							.frame(width: 25, height: 25, alignment: .leading)
-						Text(payment.value, format: .currency(code: "EUR"))
-							.frame(maxWidth: .infinity, alignment: .leading)
+					
+					Spacer()
+					
+					VStack(spacing: 5) {
+						
+						HStack {
+							Image(systemName: "calendar")
+								.font(.system(size: 25))
+							Text(FormatterFactory.dateFormatter.string(from: event.dateInterval.start))
+								.frame(maxWidth: 110, alignment: .trailing)
+						}
+						
+						HStack {
+							Image(systemName: "clock")
+								.font(.system(size: 25))
+							Text("\(FormatterFactory.timeIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))")
+								.frame(maxWidth: 110, alignment: .trailing)
+						}
+						
 					}
+					
 				}
 				
 				Text(event.description)
+					.padding(7)
 					.frame(maxWidth: .infinity, alignment: .leading)
+					.background(Color(.systemGroupedBackground))
+					.cornerRadius(5)
 				
 				Map(position: $viewModel.mapCameraPosition) {
 					Marker(event.title, systemImage: event.type.getIcon(), coordinate: event.position.asCLLocationCoordinate2D)
