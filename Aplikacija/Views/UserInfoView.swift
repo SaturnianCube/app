@@ -96,6 +96,7 @@ struct UserInfoView: View {
 		.sheet(isPresented: $viewModel.showRatingSheet) {
 			RatingCreatorView(targetUser: viewModel.user, onRatingAdded: {
 				viewModel.ratings.append($0)
+				viewModel.showRatingSheet = false
 			})
 		}
 		.navigationTitle(viewModel.user.name)

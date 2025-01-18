@@ -10,7 +10,6 @@ import SwiftUI
 @MainActor
 class RatingCreatorViewModel: CreatorViewModel {
 
-	@Environment(\.presentationMode) private var presentationMode
 	@ObservedObject private var dataManager: DataManager = DataManager.shared
 		
 	// Inputs
@@ -33,7 +32,7 @@ class RatingCreatorViewModel: CreatorViewModel {
 			return
 		}
 		
-		guard targetUser == dataManager.currentUser else {
+		guard targetUser != dataManager.currentUser else {
 			errorMessage = "Objavljanje ocen na svoj profil ni dovoljeno"
 			return
 		}
@@ -66,8 +65,7 @@ class RatingCreatorViewModel: CreatorViewModel {
 		isLoading = false
 
 		if let res = res {
-			onRatingAdded(rating)
-			presentationMode.wrappedValue.dismiss()
+			onRatingAdded(res)
 		} else {
 			errorMessage = "Nekaj je šlo narobe pri objavi ocene"
 		}
