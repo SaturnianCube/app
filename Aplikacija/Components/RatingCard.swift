@@ -19,6 +19,7 @@ struct RatingCard: View {
 		VStack {
 			
 			HStack {
+				
 				HStack {
 					Image(systemName: "person.crop.circle")
 						.resizable()
@@ -33,6 +34,14 @@ struct RatingCard: View {
 						Text("N/A")
 							.frame(maxWidth: .infinity, alignment: .leading)
 					}
+				}
+				
+				Spacer()
+				
+				HStack {
+					Text("\(viewModel.rating.rating)")
+					Image(systemName: "star.fill")
+						.font(.system(size: 20))
 				}
 			}
 			.padding([ .leading, .top, .trailing ], 10)
