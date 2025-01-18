@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct Rating: Identifiable, Hashable, Codable, IdentifiableStruct {
+struct Rating: Identifiable, Equatable, Hashable, Codable, IdentifiableStruct {
 	
 	private static let dataManager: DataManager = DataManager.shared
 	private static let collectionName: String = "ratings"
@@ -64,6 +64,14 @@ struct Rating: Identifiable, Hashable, Codable, IdentifiableStruct {
 	}
 	
 	// Static
+	
+	static func == (lhs: Rating, rhs: Rating) -> Bool {
+		return
+				lhs.id == rhs.id
+			&&	lhs.user == rhs.user
+			&&	lhs.rating == rhs.rating
+			&&	lhs.comment == rhs.comment
+	}
 	
 	static func getRefById (id: String) -> DocumentReference {
 		return dataManager.getDocumentRefById(collection: collectionName, id: id)

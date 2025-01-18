@@ -184,7 +184,12 @@ struct Event: Identifiable, Equatable, Codable, IdentifiableStruct {
 	// Static
 	
 	static func == (lhs: Event, rhs: Event) -> Bool {
-		return lhs.id == rhs.id
+		return
+				lhs.id == rhs.id
+			&&	lhs.type == rhs.type
+			&&	lhs.user == rhs.user
+			&&	lhs.title == rhs.title
+			&&	lhs.description == rhs.description
 	}
 	
 	static func getRefById (id: String) -> DocumentReference {
