@@ -51,6 +51,7 @@ struct EventCard: View {
 			.background(Color(UIColor.secondarySystemBackground))
 			.cornerRadius(5)
 		}
+		.foregroundStyle(.primary)
 	}
 }
 
