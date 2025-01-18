@@ -64,8 +64,6 @@ struct EventInfoView: View {
 								Text(payment.value, format: .currency(code: "EUR"))
 									.frame(maxWidth: .infinity, alignment: .leading)
 							}
-						} else {
-							Spacer()
 						}
 						
 					}
