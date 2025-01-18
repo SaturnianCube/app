@@ -68,15 +68,17 @@ struct EventSearchView: View {
 						.padding(.bottom, 10)
 					}
 				}
-				
-				NavigationLink(destination: EventCreatorView(onEventAdded: { _ in viewModel.navigation = 0 }), tag: 1, selection: $viewModel.navigation) {
-					EmptyView()
-				}
-				
-
 			}
 			.padding([ .leading, .trailing ], 10)
 			.padding(.top, 5)
+			.refreshable {
+				await viewModel.fetchEvents()
+			}
+			
+			NavigationLink(destination: EventCreatorView(onEventAdded: { _ in viewModel.navigation = 0 }), tag: 1, selection: $viewModel.navigation) {
+				EmptyView()
+			}
+		}
 		.searchable(text: $viewModel.searchQuery, prompt: "Išči")
 	}
 }
