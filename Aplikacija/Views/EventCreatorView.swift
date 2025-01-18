@@ -11,7 +11,8 @@ import MapKit
 struct EventCreatorView: View {
 		
 	@StateObject private var viewModel: EventCreatorViewModel = .init()
-		
+	@StateObject private var mapModel: MapViewModel = .init()
+	
     var body: some View {
 		ZStack {
 			
@@ -57,14 +58,21 @@ struct EventCreatorView: View {
 							displayedComponents: [ .date, .hourAndMinute ]
 						)
 					}
-					
 				}
+				.padding(.bottom, 5)
 				.alert(isPresented: $viewModel.shouldShowError) {
 					Alert(title: Text("Napaka"), message: Text(viewModel.errorMessage))
 				}
+
+				Map(coordinateRegion: $mapModel.mapRegion, interactionModes: .all, showsUserLocation: true, userTrackingMode: .none)
+					.padding([ .leading, .trailing], 20)
+					.frame(maxWidth: .infinity, maxHeight: 180)
+					.cornerRadius(5)
 				
 				Button("Objavi", systemImage: "plus") {
-					
+					Task {
+						await viewModel.submit(mapModel: mapModel)
+					}
 				}
 				.buttonStyle(PrimaryButtonStyle())
 				
@@ -74,6 +82,9 @@ struct EventCreatorView: View {
 			if viewModel.isLoading {
 				LoadingBuffer()
 			}
+		}
+		.onAppear {
+			
 		}
 	}
 }

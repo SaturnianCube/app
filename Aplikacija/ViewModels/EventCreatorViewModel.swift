@@ -8,7 +8,6 @@
 import SwiftUI
 import MapKit
 
-@MainActor
 class EventCreatorViewModel: CreatorViewModel {
 
 	@Environment(\.presentationMode) private var presentationMode
@@ -22,7 +21,7 @@ class EventCreatorViewModel: CreatorViewModel {
 	@State var inputStartDate: Date = Date()
 	@State var inputEndDate: Date = Date().advanced(by: TimeInterval(10 * 60))
 	
-	func submit () async {
+	func submit (mapModel: MapViewModel) async {
 		
 		guard let currentUser = dataManager.currentUser else {
 			errorMessage = "Niste prijavljeni"
@@ -49,6 +48,11 @@ class EventCreatorViewModel: CreatorViewModel {
 			return
 		}
 		
+		guard let userLocation = mapModel.userLocation else {
+			errorMessage = "Lokacija ni izbrana"
+			return
+		}
+		
 		isLoading = true
 
 		var event = Event(
@@ -59,7 +63,7 @@ class EventCreatorViewModel: CreatorViewModel {
 			payment: inputPayment > 0
 				? MonetaryValue(currency: .eur, value: Decimal(inputPayment))
 				: nil,
-			position: Coordinate(coordinate: CLLocationCoordinate2D()),
+			position: Coordinate(coordinate: userLocation),
 			dateInterval: DateInterval(start: inputStartDate, end: inputEndDate)
 		)
 		
