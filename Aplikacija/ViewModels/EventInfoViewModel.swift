@@ -15,7 +15,7 @@ class EventInfoViewModel: ObservableObject {
 	@ObservedObject private var dataManager: DataManager = .shared
 	
 	// Inputs
-	@Published var event: Event
+	let event: Event
 	
 	// State
 	@Published var user: User = User.generateDummy()

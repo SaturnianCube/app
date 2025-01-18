@@ -13,7 +13,7 @@ class UserInfoViewModel: ObservableObject {
 	@ObservedObject private var dataManager: DataManager = .shared
 	
 	// Inputs
-	@Published var user: User
+	let user: User
 	
 	// UI State
 	@Published var ratings: [Rating] = []

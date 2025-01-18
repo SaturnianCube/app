@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Heading: View {
 	
-	@State var text: String
+	let text: String
 	
     var body: some View {
 		Text("")

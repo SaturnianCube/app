@@ -10,7 +10,8 @@ import MapKit
 
 struct EventCard: View {
 	
-	@State var event: Event
+	// Inputs
+	let event: Event
 
 	private let dateFormatter = FormatterFactory.dateFormatter
 	private let timeFormatter = FormatterFactory.timeFormatter
