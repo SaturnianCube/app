@@ -39,7 +39,7 @@ struct UserInfoView: View {
 					Text(viewModel.user.biography)
 						.padding([ .all ], 10)
 						.frame(maxWidth: .infinity, alignment: .leading)
-						.background(Color(UIColor.secondarySystemBackground))
+						.background(Color(.systemGroupedBackground))
 						.cornerRadius(10)
 						.padding([ .leading, .trailing ], 10)
 					
