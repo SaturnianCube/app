@@ -29,6 +29,7 @@ struct EventCard: View {
 					Text("\(event.title)")
 						.fontWeight(.bold)
 						.frame(maxWidth: .infinity, alignment: .leading)
+						.multilineTextAlignment(.leading)
 				}
 				
 				Spacer()
