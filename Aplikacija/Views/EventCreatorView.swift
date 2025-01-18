@@ -12,6 +12,7 @@ struct EventCreatorView: View {
 		
 	@StateObject private var viewModel: EventCreatorViewModel
 	@StateObject private var mapModel: MapViewModel = .init()
+	@Environment(\.dismiss) private var dismiss
 	
 	init (onEventAdded: @escaping ((Event) -> Void)) {
 		_viewModel = .init(wrappedValue: .init(onEventAdded: onEventAdded))
@@ -77,7 +78,9 @@ struct EventCreatorView: View {
 				
 				Button("Objavi", systemImage: "plus") {
 					Task {
-						await viewModel.submit(mapModel: mapModel)
+						if await viewModel.submit(mapModel: mapModel) {
+							dismiss()
+						}
 					}
 				}
 				.buttonStyle(PrimaryButtonStyle())

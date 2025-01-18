@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EventSearchView: View {
 	
+	@Environment(\.presentationMode) private var presentationMode
 	@StateObject private var viewModel: EventSearchViewModel = .init()
 	
 	var body: some View {
@@ -75,9 +76,17 @@ struct EventSearchView: View {
 				await viewModel.fetchEvents()
 			}
 			
-			NavigationLink(destination: EventCreatorView(onEventAdded: { _ in viewModel.navigation = 0 }), tag: 1, selection: $viewModel.navigation) {
+			NavigationLink(
+				destination: EventCreatorView(onEventAdded: { _ in
+					viewModel.navigation = 0
+					presentationMode.wrappedValue.dismiss()
+				}),
+				tag: 1,
+				selection: $viewModel.navigation
+			) {
 				EmptyView()
 			}
+			
 		}
 		.searchable(text: $viewModel.searchQuery, prompt: "Išči")
 		.onChange(of: viewModel.sortedEvents) { newSortedEvents in

@@ -28,36 +28,36 @@ class EventCreatorViewModel: CreatorViewModel {
 		self.onEventAdded = onEventAdded
 	}
 	
-	func submit (mapModel: MapViewModel) async {
+	func submit (mapModel: MapViewModel) async -> Bool {
 		
 		guard let currentUser = dataManager.currentUser else {
 			errorMessage = "Niste prijavljeni"
-			return
+			return false
 		}
 		
 		guard !inputTitle.isEmpty else {
 			errorMessage = "Naslov objave ne sme biti prazen"
-			return
+			return false
 		}
 		
 		guard !inputDescription.isEmpty else {
 			errorMessage = "Opis ne sme biti prazen"
-			return
+			return false
 		}
 		
 		guard inputStartDate >= Date() else {
 			errorMessage = "Datum in čas začetka ne smeta biti v preteklosti"
-			return
+			return false
 		}
 		
 		guard inputEndDate >= inputStartDate.addingTimeInterval(10 * 60) else {
 			errorMessage = "Interval trajanja mora biti vsaj 10 minut"
-			return
+			return false
 		}
 		
 		guard let userLocation = mapModel.userLocation else {
 			errorMessage = "Lokacija ni izbrana"
-			return
+			return false
 		}
 		
 		isLoading = true
@@ -81,9 +81,12 @@ class EventCreatorViewModel: CreatorViewModel {
 		if let res = res {
 			dataManager.addEvent(event: res)
 			onEventAdded(res)
+			return true
 		} else {
 			errorMessage = "Nekaj je šlo narobe pri ustvarjanju objave"
 		}
+		
+		return false
 		
 	}
 
