@@ -9,35 +9,61 @@ import SwiftUI
 
 struct EventSearchView: View {
 	
-	@ObservedObject private var dataManager = DataManager.shared
-	
-	@State private var navigation: Int? = 0
+	@StateObject private var viewModel: EventSearchViewModel = .init()
 	
 	var body: some View {
 		NavigationStack {
-			VStack {
-				
-				Heading(text: "Iskalnik")
-								
-				ScrollView {
-					VStack {
-						ForEach($dataManager.events) { $event in
-							EventCard(event: event)
-						}
-					}
-				}
+
+			Heading(text: "Iskalnik")
+
+			HStack {
 				
 				Spacer()
 				
-				NavigationLink(destination: EventCreatorView(), tag: 1, selection: $navigation) {
+				Button(action: {
+					viewModel.toggleSortOrder()
+				}) {
+					
+					Text(viewModel.sortOrder.getLabel())
+					
+					Image(systemName: viewModel.sortOrder.getIcon())
+						.resizable()
+						.scaledToFit()
+						.frame(width: 25, height: 25)
+				}
+				
+			}
+			.padding([ .leading, .trailing ], 10)
+				
+			VStack {
+				ZStack {
+					
+					ScrollView {
+						VStack {
+							if viewModel.sortedEvents.count > 0 {
+								ForEach(viewModel.sortedEvents) { event in
+									EventCard(event: event)
+								}
+							} else {
+								Text("Trenutno ni nobene objave")
+							}
+						}
+					}
+					
+					VStack {
+						Spacer()
+						Button("Dodaj objavo", systemImage: "plus") {
+							viewModel.navigation = 1
+						}
+						.buttonStyle(PrimaryButtonStyle())
+						.padding(.bottom, 10)
+					}
+				}
+				
+				
+				NavigationLink(destination: EventCreatorView(), tag: 1, selection: $viewModel.navigation) {
 					EmptyView()
 				}
-				
-				Button("Dodaj objavo", systemImage: "plus") {
-					navigation = 1
-				}
-				.buttonStyle(PrimaryButtonStyle())
-				
 			}
 			.padding([ .leading, .top, .trailing ], 10)
 		}
