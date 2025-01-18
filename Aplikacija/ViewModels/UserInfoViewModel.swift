@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-@MainActor
 class UserInfoViewModel: ObservableObject {
 	
 	@ObservedObject private var dataManager: DataManager = .shared

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@MainActor
 class RatingCreatorViewModel: CreatorViewModel {
 
 	@ObservedObject private var dataManager: DataManager = .shared

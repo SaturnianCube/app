@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-@MainActor
 class RatingViewModel: ObservableObject {
 
 	// Inputs
