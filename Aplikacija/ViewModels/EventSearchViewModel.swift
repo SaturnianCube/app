@@ -48,26 +48,32 @@ class EventSearchViewModel: ObservableObject {
 	// UI State
 	@Published var navigation: Int? = 0
 	@Published var sortOrder: EventSortOrder = .startDate
+	@Published var searchQuery: String = ""
 	
 	private var cancellables = Set<AnyCancellable>()
 	
 	init () {
 		dataManager.$events
-			.combineLatest($sortOrder)
-			.sink { [weak self] (events, sortOrder) in
-				self?.updateSortedEvents(events: events, sortOrder: sortOrder)
+			.combineLatest($sortOrder, $searchQuery)
+			.sink { [weak self] (events, sortOrder, searchQuery) in
+				self?.updateSortedEvents(events: events, sortOrder: sortOrder, searchQuery: searchQuery)
 			}
 			.store(in: &cancellables)
 	}
 	
-	private func updateSortedEvents (events: [Event], sortOrder: EventSortOrder) {
+	func updateSortedEvents (events: [Event], sortOrder: EventSortOrder, searchQuery: String) {
+		
+		let filtered = events.filter { event in
+			searchQuery.isEmpty || event.title.localizedCaseInsensitiveContains(searchQuery)
+		}
+		
 		switch sortOrder {
 			case .startDate:
-				self.sortedEvents = events.sorted { $0.dateInterval.start > $1.dateInterval.start }
+				self.sortedEvents = filtered.sorted { $0.dateInterval.start > $1.dateInterval.start }
 			case .endDate:
-				self.sortedEvents = events.sorted { $0.dateInterval.end < $1.dateInterval.end }
+				self.sortedEvents = filtered.sorted { $0.dateInterval.end < $1.dateInterval.end }
 			case .price:
-				self.sortedEvents = events.sorted { ($0.payment?.value ?? 0) > ($1.payment?.value ?? 0) }
+				self.sortedEvents = filtered.sorted { ($0.payment?.value ?? 0) > ($1.payment?.value ?? 0) }
 		}
 	}
 	
