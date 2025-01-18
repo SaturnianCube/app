@@ -80,7 +80,7 @@ struct EventSearchView: View {
 			.padding(.top, 5)
 		}
 		.refreshable {
-			await viewModel.dataManager.fetchEvents()
+			await viewModel.fetchEvents()
 		}
 	}
 }

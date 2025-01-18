@@ -21,7 +21,12 @@ class DataManager: ObservableObject {
 	// State
 	
 	func fetchEvents () async {
-		self.events = await Event.fetchAll()
+		
+		let newEvents = await Event.fetchAll()
+		
+		await MainActor.run { [weak self] in
+			self?.events = newEvents
+		}
 	}
 	
 	func addEvent (event: Event) {

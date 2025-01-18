@@ -55,6 +55,7 @@ class EventSearchViewModel: ObservableObject {
 	init () {
 		dataManager.$events
 			.combineLatest($sortOrder, $searchQuery)
+			.receive(on: DispatchQueue.main)
 			.sink { [weak self] (events, sortOrder, searchQuery) in
 				self?.updateSortedEvents(events: events, sortOrder: sortOrder, searchQuery: searchQuery)
 			}
@@ -62,18 +63,24 @@ class EventSearchViewModel: ObservableObject {
 	}
 	
 	func updateSortedEvents (events: [Event], sortOrder: EventSortOrder, searchQuery: String) {
-		
+				
 		let filtered = events.filter { event in
 			searchQuery.isEmpty || event.title.localizedCaseInsensitiveContains(searchQuery)
 		}
 		
+		var sorted: [Event]
+		
 		switch sortOrder {
 			case .startDate:
-				self.sortedEvents = filtered.sorted { $0.dateInterval.start > $1.dateInterval.start }
+				sorted = filtered.sorted { $0.dateInterval.start > $1.dateInterval.start }
 			case .endDate:
-				self.sortedEvents = filtered.sorted { $0.dateInterval.end < $1.dateInterval.end }
+				sorted = filtered.sorted { $0.dateInterval.end < $1.dateInterval.end }
 			case .price:
-				self.sortedEvents = filtered.sorted { ($0.payment?.value ?? 0) > ($1.payment?.value ?? 0) }
+				sorted = filtered.sorted { ($0.payment?.value ?? 0) > ($1.payment?.value ?? 0) }
+		}
+		
+		withAnimation {
+			self.sortedEvents = sorted
 		}
 	}
 	
@@ -95,6 +102,10 @@ class EventSearchViewModel: ObservableObject {
 		}
 		
 		self.sortOrder = EventSortOrder.allCases[i]
+	}
+	
+	func fetchEvents () async {
+		await dataManager.fetchEvents()
 	}
 	
 }
