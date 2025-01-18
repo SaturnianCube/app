@@ -40,7 +40,7 @@ enum EventType: CaseIterable, Codable {
 			case .help:
 				return "figure.wave"
 			case .entertainment:
-				return "entertainment"
+				return "party.popper.fill"
 			case .shopping:
 				return "bag.fill"
 			case .education:
@@ -55,7 +55,7 @@ enum EventType: CaseIterable, Codable {
 			case .help:
 				return .blue
 			case .entertainment:
-				return .black
+				return .red
 			case .shopping:
 				return .yellow
 			case .education:
