@@ -101,7 +101,7 @@ struct EventInfoView: View {
 				Text(event.description)
 					.padding(7)
 					.frame(maxWidth: .infinity, alignment: .leading)
-					.background(Color(.systemGroupedBackground))
+					.background(Color(.systemGray6))
 					.cornerRadius(5)
 				
 				Map(position: $viewModel.mapCameraPosition) {
