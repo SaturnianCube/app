@@ -62,9 +62,7 @@ struct UserInfoView: View {
 							viewModel.showRatingSheet = true
 						}) {
 							Image(systemName: "plus")
-								.resizable()
-								.scaledToFit()
-								.frame(width: 15, height: 15)
+								.font(.system(size: 15))
 						}
 						.buttonStyle(PrimaryIconButtonStyle())
 					}
@@ -74,9 +72,7 @@ struct UserInfoView: View {
 					HStack {
 						Text("\(viewModel.averageRating)")
 						Image(systemName: "star.fill")
-							.resizable()
-							.scaledToFit()
-							.frame(width: 20, height: 20, alignment: .trailing)
+							.font(.system(size: 20))
 					}
 				}
 				
