@@ -14,12 +14,12 @@ class EventCreatorViewModel: CreatorViewModel {
 	@ObservedObject private var dataManager: DataManager = .shared
 		
 	// UI Inputs
-	@State var inputTitle: String = ""
-	@State var inputDescription: String = ""
-	@State var inputType: EventType = .help
-	@State var inputPayment: UInt = 0
-	@State var inputStartDate: Date = Date()
-	@State var inputEndDate: Date = Date().advanced(by: TimeInterval(10 * 60))
+	@Published var inputTitle: String = ""
+	@Published var inputDescription: String = ""
+	@Published var inputType: EventType = .help
+	@Published var inputPayment: UInt = 0
+	@Published var inputStartDate: Date = Date()
+	@Published var inputEndDate: Date = Date().advanced(by: TimeInterval(10 * 60))
 	
 	func submit (mapModel: MapViewModel) async {
 		
