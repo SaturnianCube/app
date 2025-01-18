@@ -13,6 +13,9 @@ class EventCreatorViewModel: CreatorViewModel {
 	@Environment(\.presentationMode) private var presentationMode
 	@ObservedObject private var dataManager: DataManager = .shared
 		
+	// Inputs
+	private var onEventAdded: ((Event) -> Void)
+	
 	// UI Inputs
 	@Published var inputTitle: String = ""
 	@Published var inputDescription: String = ""
@@ -20,6 +23,10 @@ class EventCreatorViewModel: CreatorViewModel {
 	@Published var inputPayment: UInt = 0
 	@Published var inputStartDate: Date = Date()
 	@Published var inputEndDate: Date = Date().advanced(by: TimeInterval(10 * 60))
+	
+	init (onEventAdded: @escaping ((Event) -> Void)) {
+		self.onEventAdded = onEventAdded
+	}
 	
 	func submit (mapModel: MapViewModel) async {
 		
@@ -73,7 +80,7 @@ class EventCreatorViewModel: CreatorViewModel {
 
 		if let res = res {
 			dataManager.addEvent(event: res)
-			presentationMode.wrappedValue.dismiss()
+			onEventAdded(res)
 		} else {
 			errorMessage = "Nekaj je šlo narobe pri ustvarjanju objave"
 		}

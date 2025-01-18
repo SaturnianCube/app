@@ -10,8 +10,12 @@ import MapKit
 
 struct EventCreatorView: View {
 		
-	@StateObject private var viewModel: EventCreatorViewModel = .init()
+	@StateObject private var viewModel: EventCreatorViewModel
 	@StateObject private var mapModel: MapViewModel = .init()
+	
+	init (onEventAdded: @escaping ((Event) -> Void)) {
+		_viewModel = .init(wrappedValue: .init(onEventAdded: onEventAdded))
+	}
 	
     var body: some View {
 		ZStack {
@@ -90,5 +94,5 @@ struct EventCreatorView: View {
 }
 
 #Preview {
-    EventCreatorView()
+	EventCreatorView(onEventAdded: { _ in })
 }

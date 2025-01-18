@@ -69,10 +69,11 @@ struct EventSearchView: View {
 					}
 				}
 				
-				
-				NavigationLink(destination: EventCreatorView(), tag: 1, selection: $viewModel.navigation) {
+				NavigationLink(destination: EventCreatorView(onEventAdded: { _ in viewModel.navigation = 0 }), tag: 1, selection: $viewModel.navigation) {
 					EmptyView()
 				}
+				
+
 			}
 			.padding([ .leading, .trailing ], 10)
 			.padding(.top, 5)
