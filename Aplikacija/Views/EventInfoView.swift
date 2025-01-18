@@ -29,20 +29,20 @@ struct EventInfoView: View {
 	var body: some View {
 		NavigationStack {
 				
-//			Heading(text: "Objava")
+			Heading(text: event.title)
 			
 			VStack {
 				
-				HStack {
-					Image(systemName: event.type.getIcon())
-						.resizable()
-						.scaledToFit()
-						.frame(width: 30, height: 30, alignment: .leading)
-					Text(event.title)
-						.frame(maxWidth: .infinity, alignment: .leading)
-						.font(.largeTitle)
-						.bold()
-				}
+//				HStack {
+//					Image(systemName: event.type.getIcon())
+//						.resizable()
+//						.scaledToFit()
+//						.frame(width: 30, height: 30, alignment: .leading)
+//					Text(event.title)
+//						.frame(maxWidth: .infinity, alignment: .leading)
+//						.font(.largeTitle)
+//						.bold()
+//				}
 				
 				HStack {
 					
@@ -54,13 +54,21 @@ struct EventInfoView: View {
 							NavigationLink(user.name) {
 								UserInfoView(user: user)
 							}
+							.frame(maxWidth: .infinity, alignment: .leading)
+						}
+						
+						HStack {
+							Image(systemName: event.type.getIcon())
+								.font(.system(size: 20))
+							Text(event.type.getName())
 								.frame(maxWidth: .infinity, alignment: .leading)
+
 						}
 						
 						if let payment = event.payment {
 							HStack {
 								Image(systemName: "banknote")
-									.font(.system(size: 25))
+									.font(.system(size: 20))
 								Text(payment.value, format: .currency(code: "EUR"))
 									.frame(maxWidth: .infinity, alignment: .leading)
 							}
